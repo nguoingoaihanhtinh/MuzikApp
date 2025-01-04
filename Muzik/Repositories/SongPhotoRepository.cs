@@ -4,7 +4,7 @@ using Muzik.Data;
 using Muzik.Entities;
 using Muzik.Interfaces;
 
-namespace API.Repositories;
+namespace Muzik.Repositories;
 
 public class SongPhotoRepository(DataContext context) : ISongPhotoRepository
 {

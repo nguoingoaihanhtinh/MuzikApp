@@ -1,6 +1,6 @@
-using API.Helpers;
+using Muzik.Helpers;
 
-namespace API.Extensions;
+namespace Muzik.Extensions;
 
 public static class HttpExtensions
 {

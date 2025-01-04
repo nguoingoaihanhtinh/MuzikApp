@@ -4,7 +4,7 @@ using Muzik.Entities;
 using Muzik.Helpers;
 using Muzik.Interfaces;
 
-namespace API.Repositories;
+namespace Muzik.Repositories;
 
 public class SongRepository(DataContext context, IMapper mapper) : ISongRepository
 {

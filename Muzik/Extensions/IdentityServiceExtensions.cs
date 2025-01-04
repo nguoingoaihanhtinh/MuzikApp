@@ -1,7 +1,7 @@
-using API.Data;
-using API.Entities;
+using Muzik.Data;
+using Muzik.Entities;
 
-namespace API.Extensions;
+namespace Muzik.Extensions;
 
 public static class IdentityServiceExtensions
 {
