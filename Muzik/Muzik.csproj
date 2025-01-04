@@ -13,6 +13,7 @@
 
     <!-- Cloudinary -->
     <PackageReference Include="CloudinaryDotNet" Version="1.27.1" />
+    <PackageReference Include="MailKit" Version="4.9.0" />
 
     <!-- ASP.NET Core Authentication & Authorization -->
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.0" />
