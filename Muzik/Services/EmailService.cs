@@ -32,9 +32,7 @@ public class EmailService(IOptions<EmailSenderSettings> config) : IEmailService
         await client.ConnectAsync(config.Value.SmtpServer, config.Value.Port, true);
         client.AuthenticationMechanisms.Remove("XOAUTH2");
         await client.AuthenticateAsync(config.Value.UserName, config.Value.Password);
-
         var result = await client.SendAsync(mailMessage);
-
         await client.DisconnectAsync(true);
     }
 }

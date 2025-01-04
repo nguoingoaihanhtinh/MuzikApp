@@ -1,10 +1,10 @@
-using API.Data;
-using API.Helpers;
-using API.Interfaces;
-using API.Repositories;
-using API.Services;
+using Muzik.Data;
+using Muzik.Helpers;
+using Muzik.Interfaces;
+using Muzik.Repositories;
+using Muzik.Services;
 
-namespace API.Extensions;
+namespace Muzik.Extensions;
 
 public static class ApplicationServiceExtensions
 {

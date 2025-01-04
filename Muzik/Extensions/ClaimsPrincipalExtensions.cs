@@ -1,4 +1,4 @@
-namespace API.Extensions;
+namespace Muzik.Extensions;
 
 public static class ClaimsPrincipalExtensions
 {
