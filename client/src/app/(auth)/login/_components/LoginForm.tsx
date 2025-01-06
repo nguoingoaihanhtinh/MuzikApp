@@ -89,9 +89,9 @@ const LoginForm = () => {
     <div className="flex flex-col w-[40vw] items-center justify-center">
       <FormContainer onSubmit={handleSubmit}>
         <div className="flex flex-row items-center justify-center mb-7">
-          <Image src={"/vera-icon.png"} alt="vera" width={64} height={64} />
+          <Image src={"/icon.jpg"} alt="lora" width={64} height={64} />
           <h1 className="text-[30px] font-bold tracking-wider text-white text-nowrap">
-            LOG IN TO <span className="text-general-pink">VERA</span>
+            LOG IN TO <span className="text-general-pink">Lora</span>
           </h1>
         </div>
 
@@ -103,7 +103,7 @@ const LoginForm = () => {
           <Label htmlFor="email">Email Address or Username</Label>
           <Input
             id="email"
-            placeholder="musicinmyhear@gmail.com"
+            placeholder="user@gmail.com"
             type="email"
             value={formData.email}
             onChange={handleInputChange}
