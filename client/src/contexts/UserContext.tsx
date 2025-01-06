@@ -234,10 +234,10 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
       setIsAuthenticated(false);
       setUserDetails(null);
 
-      //   const publicRoutes = /\/(login|signup|verify-code|reset-password)/;
-      //   if (!publicRoutes.test(window.location.pathname)) {
-      //     router.push("/login");
-      //   }
+      const publicRoutes = /\/(login|signup|verify-code|reset-password)/;
+      if (!publicRoutes.test(window.location.pathname)) {
+        router.push("/login");
+      }
     }
   }, [router]);
 

@@ -1,12 +1,11 @@
 import React from "react";
-import Image from "next/image";
-import LoginForm from "./_components/LoginForm";
 
-const Login = () => {
+import Image from "next/image";
+import SignupForm from "./_components/SignupForm";
+
+const page = () => {
   return (
     <div className="flex flex-row">
-      <LoginForm />
-
       <Image
         src={"/auth-welcome.png"}
         alt="welcomeImage"
@@ -20,8 +19,9 @@ const Login = () => {
         }}
         className="hidden md:block"
       />
+      <SignupForm />
     </div>
   );
 };
 
-export default Login;
+export default page;
