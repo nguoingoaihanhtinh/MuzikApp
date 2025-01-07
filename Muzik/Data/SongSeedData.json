@@ -1,0 +1,23 @@
+[
+  {
+    "SongName": "Không thể say",
+    "Description": "Bài hát 'Không Thể Say' là một ca khúc mang đậm chất cảm xúc và tự sự, thường được thể hiện qua giai điệu nhẹ nhàng nhưng đầy sâu lắng. Nội dung bài hát xoay quanh tâm trạng của một người dường như không thể trốn thoát khỏi những nỗi buồn, kể cả khi tìm đến men say. Thay vì quên đi nỗi đau, họ lại càng nhớ rõ hơn về những kỷ niệm và cảm giác cô đơn.",
+    "PublisherId": 3,
+    "MusicUrl": "https://res.cloudinary.com/dxatsebhv/video/upload/v1736232737/songs/1/khong-the-say.mp3",
+    "LyricUrl": "https://res.cloudinary.com/dxatsebhv/raw/upload/v1736251383/songs/1/lyric/khong-the-say-lyric.lrc"
+  },
+  {
+    "SongName": "Sớm mai",
+    "Description": "'Sớm Mai Pialing' là một ca khúc mang đậm chất dân ca và hơi thở của vùng cao nguyên. Bài hát gợi lên hình ảnh tươi sáng của buổi sớm mai, khi ánh nắng đầu tiên rọi qua những tán cây, mang theo hương thơm của núi rừng và sự sống động của thiên nhiên.",
+    "PublisherId": 4,
+    "MusicUrl": "https://res.cloudinary.com/dxatsebhv/video/upload/v1736233156/songs/2/som-mai.mp3",
+    "LyricUrl": "https://res.cloudinary.com/dxatsebhv/raw/upload/v1736251589/songs/2/lyric/som-mai-lyric.lrc"
+  },
+  {
+    "SongName": "Một đời",
+    "Description": "'Một Đời' của 14Casper là một bản nhạc rap sâu lắng, thể hiện những tâm tư, trăn trở về cuộc đời và những lựa chọn cá nhân. Bài hát là một hành trình kể lại những mảnh ghép ký ức, tình yêu, và sự cô đơn mà ai cũng từng trải qua.",
+    "PublisherId": 5,
+    "MusicUrl": "https://res.cloudinary.com/dxatsebhv/video/upload/v1736233177/songs/3/mot-doi.mp3",
+    "LyricUrl": "https://res.cloudinary.com/dxatsebhv/raw/upload/v1736251821/songs/3/lyric/mot-doi-lyric.lrc"
+  }
+]
