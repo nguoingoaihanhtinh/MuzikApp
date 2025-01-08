@@ -4,6 +4,7 @@ using Muzik.Extensions;
 using Muzik.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Logging.AddConsole();
 
 // Add services to the container.
 builder.Services.AddApplicationServices(builder.Configuration);
@@ -11,6 +12,9 @@ builder.Services.AddIdentityServices(builder.Configuration);
 
 var app = builder.Build();
 
+var logger = app.Services.GetRequiredService<ILogger<Program>>();
+
+logger.LogInformation("Application starting...");
 // Configure the HTTP request pipeline.
 app.UseMiddleware<ExceptionMiddleware>();
 app.UseCors(x => x.AllowAnyHeader().AllowAnyMethod()
@@ -28,9 +32,11 @@ try
     var context = services.GetRequiredService<DataContext>();
     var userManager = services.GetRequiredService<UserManager<AppUser>>();
     var roleManager = services.GetRequiredService<RoleManager<AppRole>>();
+    var scopedLogger = services.GetRequiredService<ILogger<Program>>();
 
     await context.Database.MigrateAsync();
-    await Seed.SeedPhotos(context);
+
+    await Seed.SeedPhotos(context, scopedLogger);
     await Seed.SeedUsers(context, userManager, roleManager);
     await Seed.SeedGenres(context);
     await Seed.SeedSongs(context);
@@ -39,8 +45,8 @@ try
 }
 catch (Exception ex)
 {
-    var logger = services.GetRequiredService<ILogger<Program>>();
-    logger.LogError(ex, "An error occurred during migration");
+    var scopedLogger = services.GetRequiredService<ILogger<Program>>();
+    scopedLogger.LogError(ex, "An error occurred during migration");
 }
 
 app.Run();
