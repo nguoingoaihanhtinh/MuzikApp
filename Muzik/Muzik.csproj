@@ -50,7 +50,7 @@
 
   <ItemGroup>
     <!-- Swagger/OpenAPI -->
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="7.2.0" />
   </ItemGroup>
 
 </Project>

@@ -6,17 +6,30 @@ namespace Muzik.Services;
 public class FileService : IFileService
 {
     private readonly Cloudinary _cloudinary;
-    private readonly string _folderRoot = "Vera-MLA/";
+    private readonly string _folderRoot;
 
-    public FileService(IOptions<CloudinarySettings> config)
+    public FileService(IOptions<CloudinarySettings> cloudinaryConfig, IOptions<FileSettings> fileSettings)
     {
-        var acc = new Account(
-            config.Value.CloudName,
-            config.Value.ApiKey,
-            config.Value.ApiSecret
+        var settings = cloudinaryConfig.Value;
+
+        Console.WriteLine($"CloudName: {settings.CloudName}");
+        Console.WriteLine($"ApiKey: {settings.ApiKey}");
+        Console.WriteLine($"ApiSecret: {settings.ApiSecret}");
+
+        if (string.IsNullOrWhiteSpace(settings.CloudName) ||
+            string.IsNullOrWhiteSpace(settings.ApiKey) ||
+            string.IsNullOrWhiteSpace(settings.ApiSecret))
+        {
+            throw new ArgumentException("Invalid Cloudinary settings provided!");
+        }
+            var acc = new Account(
+            cloudinaryConfig.Value.CloudName,
+            cloudinaryConfig.Value.ApiKey,
+            cloudinaryConfig.Value.ApiSecret
         );
 
         _cloudinary = new Cloudinary(acc);
+        _folderRoot = fileSettings.Value.FolderRoot; 
     }
 
     public async Task<DeletionResult> DeleteFileAsync(string publicId, ResourceType resourceType)
