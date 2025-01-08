@@ -6,16 +6,17 @@ using Muzik.Middleware;
 var builder = WebApplication.CreateBuilder(args);
 builder.Logging.AddConsole();
 
-// Add services to the container.
 builder.Services.AddApplicationServices(builder.Configuration);
 builder.Services.AddIdentityServices(builder.Configuration);
+
+builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
 var logger = app.Services.GetRequiredService<ILogger<Program>>();
 
 logger.LogInformation("Application starting...");
-// Configure the HTTP request pipeline.
+
 app.UseMiddleware<ExceptionMiddleware>();
 app.UseCors(x => x.AllowAnyHeader().AllowAnyMethod()
     .WithOrigins("http://localhost:3000"));
@@ -23,6 +24,14 @@ app.UseCors(x => x.AllowAnyHeader().AllowAnyMethod()
 app.UseAuthentication();
 app.UseAuthorization();
 
+// Enable Swagger middleware in the request pipeline
+app.UseSwagger();
+
+app.UseSwaggerUI(c =>
+{
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+    c.RoutePrefix = string.Empty; 
+});
 app.MapControllers();
 
 using var scope = app.Services.CreateScope();
