@@ -10,7 +10,10 @@ builder.Services.AddApplicationServices(builder.Configuration);
 builder.Services.AddIdentityServices(builder.Configuration);
 
 builder.Services.AddSwaggerGen();
-
+builder.Logging.AddConsole(options =>
+{
+    options.LogToStandardErrorThreshold = LogLevel.Information;
+});
 var app = builder.Build();
 
 var logger = app.Services.GetRequiredService<ILogger<Program>>();
@@ -45,7 +48,7 @@ try
 
     await context.Database.MigrateAsync();
 
-    await Seed.SeedPhotos(context, scopedLogger);
+    await Seed.SeedPhotos(context);
     await Seed.SeedUsers(context, userManager, roleManager);
     await Seed.SeedGenres(context);
     await Seed.SeedSongs(context);

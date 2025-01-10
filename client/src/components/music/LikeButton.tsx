@@ -29,7 +29,7 @@ const LikeButton: React.FC<LikeButtonProps> = ({ songId, size = 20 }) => {
   };
 
   return (
-    <button onClick={handleLike}>
+    <div onClick={handleLike}>
       {isLiked ? (
         <MdFavorite
           size={size} // Use the size prop here
@@ -41,7 +41,7 @@ const LikeButton: React.FC<LikeButtonProps> = ({ songId, size = 20 }) => {
           className="text-general-pink hover:text-general-pink-hover transition-colors duration-200"
         />
       )}
-    </button>
+    </div>
   );
 };
 
