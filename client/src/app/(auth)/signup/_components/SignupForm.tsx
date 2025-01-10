@@ -66,7 +66,14 @@ const SignupForm = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setErrors({});
-
+    console.log("Request payload:", {
+      email: formData.email,
+      password: formData.password,
+      firstName: formData.firstname,
+      lastName: formData.lastname,
+      gender: formData.gender,
+      role: isRole,
+    });
     try {
       setLoadingState(true);
       const validatedData = signupSchema.parse({

@@ -1,18 +1,13 @@
-"use client";
-import { CldUploadWidget } from "next-cloudinary";
+import React from "react";
 
-export default function Home() {
+const page = () => {
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <section>
-          <CldUploadWidget uploadPreset="muzik-cloud" options={{ folder: "Lora" }}>
-            {({ open }) => {
-              return <button onClick={() => open()}>Upload an Image</button>;
-            }}
-          </CldUploadWidget>
-        </section>
-      </main>
+    <div className="flex flex-col items-center justify-center h-screen w-screen bg-slate-900">
+      <p className="text-nowrap text-general-pink text-4xl animate-pulse drop-shadow-[0_0_15px_rgba(236,72,153,0.7)]">
+        Lora - The Ultimate Music Platform
+      </p>
     </div>
   );
-}
+};
+
+export default page;
