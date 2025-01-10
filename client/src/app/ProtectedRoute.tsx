@@ -10,6 +10,7 @@ interface IProtectedRoute {
 }
 
 const ProtectedRoute: React.FC<IProtectedRoute> = ({ children }) => {
+  console.log("hello");
   const { isAuthenticated } = useUser();
   const router = useRouter();
   const pathname = usePathname();
@@ -30,6 +31,8 @@ const ProtectedRoute: React.FC<IProtectedRoute> = ({ children }) => {
   ];
 
   useEffect(() => {
+    console.log("isAuthenticated:", isAuthenticated);
+    console.log("Current pathname:", pathname);
     setLoadingState(false); // Stop loading indicator
 
     // Handle root route `/`

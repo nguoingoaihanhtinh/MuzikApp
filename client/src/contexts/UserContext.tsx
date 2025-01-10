@@ -215,11 +215,20 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
     };
 
     const authToken = getCookie("auth_token");
-    const storedUserDetails = localStorage.getItem("userDetails");
+    console.log("auth", authToken);
+
+    const storedUserDetails = localStorage.getItem("userDetails") || getCookie("userDetails");
+    console.log("user (encoded)", storedUserDetails);
 
     if (authToken && storedUserDetails) {
       try {
-        const parsedUserDetails = JSON.parse(storedUserDetails) as UserDto;
+        // Decode the userDetails string
+        const decodedUserDetails = decodeURIComponent(storedUserDetails);
+        console.log("user (decoded)", decodedUserDetails);
+
+        // Parse the decoded string as JSON
+        const parsedUserDetails = JSON.parse(decodedUserDetails) as UserDto;
+
         setToken(authToken);
         setIsAuthenticated(true);
         setUserDetails(parsedUserDetails);

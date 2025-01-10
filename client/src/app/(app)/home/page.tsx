@@ -1,8 +1,9 @@
 import React from "react";
-import MusicLanding from "./_components/MusicLanding";
-import MusicCards from "./_components/MusicCards";
-import TrendingSongs from "./_components/TrendingSongs";
+
 import MetaData from "./_components/MetaData";
+import MusicCards from "./_components/MusicCard";
+import MusicLanding from "./_components/MusicLanding";
+import TrendingSongs from "./_components/TrendingSongs";
 
 const page = () => {
   return (

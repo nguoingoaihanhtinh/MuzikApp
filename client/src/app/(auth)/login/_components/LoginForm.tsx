@@ -49,7 +49,10 @@ const LoginForm = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setErrors({});
-
+    console.log("Request payload:", {
+      email: formData.email,
+      password: formData.password,
+    });
     try {
       const validatedData = loginSchema.parse(formData);
       setLoadingState(true);
