@@ -4,43 +4,27 @@ namespace Muzik.Data;
 
 public class Seed
 {
-    public static async Task SeedPhotos(DataContext context, ILogger logger)
-{
-    if (await context.Photos.AnyAsync())
+    public static async Task SeedPhotos(DataContext context)
     {
-        logger.LogInformation("Photos already seeded.");
-        return;
-    }
+        if (await context.Photos.AnyAsync()) return;
 
-    logger.LogInformation("Seeding photos...");
-    var photoData = await File.ReadAllTextAsync("Data/PhotoSeedData.json");
-
-    var options = new JsonSerializerOptions
-    {
-        PropertyNameCaseInsensitive = true
-    };
-
-    var photos = JsonSerializer.Deserialize<List<Photo>>(photoData, options);
-    if (photos == null || !photos.Any())
-    {
-        logger.LogWarning("No photos found to seed.");
-        return;
-    }
-
-    foreach (var photo in photos)
-    {
-        if (string.IsNullOrWhiteSpace(photo.Url))
+        var photoData = await File.ReadAllTextAsync("Data/PhotoSeedData.json");
+        var options = new JsonSerializerOptions
         {
-            logger.LogWarning("Invalid photo URL skipped.");
-            continue;
+            PropertyNameCaseInsensitive = true
+        };
+
+        var photos = JsonSerializer.Deserialize<List<Photo>>(photoData, options);
+
+        if (photos == null) return;
+
+        foreach (var photo in photos)
+        {
+            context.Photos.Add(photo);
         }
 
-        context.Photos.Add(photo);
+        await context.SaveChangesAsync();
     }
-
-    await context.SaveChangesAsync();
-    logger.LogInformation("Photos seeded successfully.");
-}
 
     public static async Task SeedUsers(
         DataContext context,
@@ -119,8 +103,6 @@ public class Seed
 
     public static async Task SeedSongs(DataContext context)
     {
-        try
-    {
         if (await context.Songs.AnyAsync()) return;
 
         var songData = await File.ReadAllTextAsync("Data/SongSeedData.json");
@@ -145,22 +127,17 @@ public class Seed
         await SeedSongPhotos(context);
         await SeedArtistSongs(context);
     }
-    catch (Exception ex)
-    {
-        var logger = new LoggerFactory().CreateLogger("SeedSongs");
-        logger.LogError(ex, "An error occurred while seeding songs.");
-    }
-    }
-    //Photos for song start from number 6
+
     private static async Task SeedSongPhotos(DataContext context)
     {
         var songs = await context.Songs.ToListAsync();
-        var photoId = 6;
-
+        var photoId = 6;  
         foreach (var song in songs)
         {
-            var count = 3;
+            var photosForSong = new List<SongPhoto>();
+            var count = 3; 
             var isMain = true;
+
             while (count-- > 0)
             {
                 var songPhoto = new SongPhoto
@@ -170,14 +147,15 @@ public class Seed
                     IsMain = isMain
                 };
 
-                context.SongPhotos.Add(songPhoto);
-
+                photosForSong.Add(songPhoto);
                 isMain = false;
             }
+            context.SongPhotos.AddRange(photosForSong);
         }
 
         await context.SaveChangesAsync();
     }
+
 
     public static async Task SeedSongGenres(DataContext context)
     {
@@ -209,10 +187,6 @@ public class Seed
                     SongId = song.Id,
                     ArtistId = song.PublisherId
                 },
-                new() {
-                    SongId = song.Id,
-                    ArtistId = ((song.PublisherId - 2) % 6) + 3
-                }
             };
 
             context.ArtistSongs.AddRange(artistSongs);
@@ -262,11 +236,11 @@ public class Seed
                     SongId = album.Id * 2 - 1,
                     Order = 1
                 },
-                // new() {
-                //     AlbumId = album.Id,
-                //     SongId = album.Id * 2,
-                //     Order = 2
-                // }
+                new() {
+                    AlbumId = album.Id,
+                    SongId = album.Id * 2,
+                    Order = 2
+                }
             };
 
             context.AlbumSongs.AddRange(albumSongs);
@@ -320,7 +294,7 @@ public class Seed
     private static async Task SeedAlbumPhotos(DataContext context)
     {
         var albums = await context.Albums.ToListAsync();
-        var photoId = 15;
+        var photoId = 10;
 
         foreach (var album in albums)
         {

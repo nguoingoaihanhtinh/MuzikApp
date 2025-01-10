@@ -7,6 +7,7 @@ import usePlayerStore from "@/stores/player-store";
 import { Song } from "@/types/global";
 
 const SongCard = ({ song }: { song: Song }) => {
+  console.log("song", song);
   const { setActiveTrack, setPlaylist } = usePlayerStore();
 
   const handlePlayMusic = () => {

@@ -191,7 +191,7 @@ const MusicPlayerContent = () => {
   if (!mounted || !activeSong) {
     return null;
   }
-
+  console.log("activesong", activeSong);
   return (
     <div className="fixed bottom-0 left-0 right-0 border-t border-general-pink/50 bg-general-theme">
       <div className="flex items-center justify-between py-4 px-2">
