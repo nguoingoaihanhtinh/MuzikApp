@@ -86,7 +86,7 @@ const SignupForm = () => {
         password: validatedData.password,
         firstName: validatedData.firstname,
         lastName: validatedData.lastname,
-        gender: isGender,
+        gender: formData.gender,
         role: isRole,
       });
     } catch (error) {
