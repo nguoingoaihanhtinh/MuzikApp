@@ -86,13 +86,23 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
 
     setLoadingState(true);
     try {
-      await client("/api/auth/validate-signup", {
+      const response = await client("/api/auth/validate-signup", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(signupCreds),
       });
+
+      // Log the full response to inspect its structure
+      console.log("Response from validate-signup:", response);
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error("Error details:", errorData);
+        throw new Error(errorData?.description || "Unexpected error occurred");
+      }
+
       setTempSignupCreds(signupCreds);
     } catch (error) {
       console.error("Verify email failed:", error);

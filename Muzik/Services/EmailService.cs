@@ -1,38 +1,49 @@
 using Muzik.Helpers;
 using Muzik.Interfaces;
+using System.Text.RegularExpressions;
+using MimeKit;
+using Microsoft.Extensions.Options;
 
-namespace Muzik.Services;
-
-public class EmailService(IOptions<EmailSenderSettings> config) : IEmailService
+namespace Muzik.Services
 {
-    public async Task SendEmailAsync(EmailMessage message)
+    public class EmailService : IEmailService
     {
-        var emailMessage = CreateMailMessage(message);
+        private readonly IOptions<EmailSenderSettings> config;
 
-        await SendAsync(emailMessage);
-    }
-
-    private MimeMessage CreateMailMessage(EmailMessage message)
-    {
-        var emailMessage = new MimeMessage();
-        emailMessage.From.Add(new MailboxAddress(config.Value.DisplayName, config.Value.From));
-        emailMessage.To.Add(message.To);
-        emailMessage.Subject = message.Subject;
-        emailMessage.Body = new TextPart(MimeKit.Text.TextFormat.Html)
+        public EmailService(IOptions<EmailSenderSettings> config)
         {
-            Text = message.Content
-        };
+            this.config = config;
+        }
 
-        return emailMessage;
-    }
+        public async Task SendEmailAsync(EmailMessage message)
+        {
+            var emailMessage = CreateMailMessage(message);
+            await SendAsync(emailMessage);
+        }
 
-    private async Task SendAsync(MimeMessage mailMessage)
-    {
-        using var client = new MailKit.Net.Smtp.SmtpClient();
-        await client.ConnectAsync(config.Value.SmtpServer, config.Value.Port, true);
-        client.AuthenticationMechanisms.Remove("XOAUTH2");
-        await client.AuthenticateAsync(config.Value.UserName, config.Value.Password);
-        var result = await client.SendAsync(mailMessage);
-        await client.DisconnectAsync(true);
+        private MimeMessage CreateMailMessage(EmailMessage message)
+        {
+            var emailMessage = new MimeMessage();
+            emailMessage.From.Add(new MailboxAddress(config.Value.DisplayName, config.Value.From));
+            emailMessage.To.Add(message.To); // Use the MailboxAddress directly without validation
+            emailMessage.Subject = message.Subject;
+            emailMessage.Body = new TextPart(MimeKit.Text.TextFormat.Html)
+            {
+                Text = message.Content
+            };
+
+            return emailMessage;
+        }
+        private async Task SendAsync(MimeMessage mailMessage)
+        {
+            using var client = new MailKit.Net.Smtp.SmtpClient();
+            await client.ConnectAsync(config.Value.SmtpServer, config.Value.Port, true);
+            client.AuthenticationMechanisms.Remove("XOAUTH2");
+            await client.AuthenticateAsync(config.Value.UserName, config.Value.Password);
+            await client.SendAsync(mailMessage);
+            await client.DisconnectAsync(true);
+        }
+
+   
     }
 }

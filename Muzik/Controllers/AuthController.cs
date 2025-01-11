@@ -2,6 +2,7 @@ using Muzik.DTOs.Users;
 using Muzik.Entities;
 using Muzik.Helpers;
 using Muzik.Interfaces;
+using System.Text.RegularExpressions;
 
 namespace Muzik.Controllers;
 
@@ -19,11 +20,15 @@ public class AuthController(
 ) : BaseApiController
 {
     private Dictionary<string, UserMap> pincodeMap = [];
-
+    public static bool IsValidEmail(string email)
+    {
+        var emailPattern = @"^[^@\s]+@[^@\s]+\.[^@\s]+$";
+        return Regex.IsMatch(email, emailPattern);
+    }
     [HttpPost("validate-signup")]
     public async Task<ActionResult<UserDto>> ValidateSignup(RegisterDto registerDto)
     {
-        if (await UserExists(registerDto.Email))
+         if (string.IsNullOrWhiteSpace(registerDto.Email) || !IsValidEmail(registerDto.Email))
         {
             return BadRequest("Email already exists.");
         }
