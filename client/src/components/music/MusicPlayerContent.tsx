@@ -1,5 +1,3 @@
-"use client";
-
 import * as React from "react";
 import { Volume2, VolumeX } from "lucide-react";
 import { Shuffle, SkipBack, Play, SkipForward, Repeat, Pause, Mic2, ListMusic, Loader2 } from "lucide-react";
@@ -113,7 +111,7 @@ const MusicPlayerContent = () => {
     volume: volume,
     onplay: () => {
       setIsLoading(false);
-      onPlay();
+      onPlay(); // Make sure to update the state when the song starts playing
     },
     onend: () => {
       onPause();
@@ -130,10 +128,14 @@ const MusicPlayerContent = () => {
 
   const handlePlayPause = () => {
     if (isPlaying) {
-      pause();
+      pause(); // Pause if it's currently playing
     } else {
       setIsLoading(true);
-      play();
+      if (sound) {
+        sound.play(); // Play the sound, it should continue from the current position
+      } else {
+        play(); // This will start the sound if it's not already loaded
+      }
     }
   };
 
@@ -182,16 +184,23 @@ const MusicPlayerContent = () => {
 
   React.useEffect(() => {
     sound?.play();
-
     return () => {
       sound?.unload();
     };
   }, [sound]);
 
+  const handleSeek = (value: number) => {
+    if (sound && sound.duration()) {
+      const newPosition = (value / 100) * sound.duration();
+      sound.seek(newPosition); // Seek to the new position
+      setProgress(value); // Update progress bar
+    }
+  };
+
   if (!mounted || !activeSong) {
     return null;
   }
-  console.log("activesong", activeSong);
+
   return (
     <div className="fixed bottom-0 left-0 right-0 border-t border-general-pink/50 bg-general-theme">
       <div className="flex items-center justify-between py-4 px-2">
@@ -231,13 +240,7 @@ const MusicPlayerContent = () => {
               step={0.1}
               className="w-full"
               disabled={isLoading}
-              onValueChange={(value) => {
-                if (sound && sound.duration()) {
-                  const newPosition = (value[0] / 100) * sound.duration();
-                  sound.seek(newPosition);
-                  setProgress(value[0]);
-                }
-              }}
+              onValueChange={handleSeek}
             />
             <span className="text-xs tabular-nums text-muted-foreground">
               {sound ? formatTime(sound.duration()) : "0:00"}
