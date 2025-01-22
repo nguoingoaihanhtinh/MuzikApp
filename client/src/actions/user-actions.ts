@@ -10,7 +10,7 @@ export interface ArtistsReponse {
 
 export async function getAllAritst(): Promise<ArtistsReponse> {
   const token = await getAuthTokenFromCookies();
-
+  console.log("token", token);
   try {
     const response = await client<User[]>("/api/users/artists", {
       method: "GET",

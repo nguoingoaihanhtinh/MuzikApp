@@ -5,70 +5,10 @@ import Image from "next/image";
 import { Plus } from "lucide-react";
 import AlbumCard from "@/components/ui/AlbumCard";
 import { useRouter } from "next/navigation";
-
-const artists = [
-  { name: "Eminem", image: "https://picsum.photos/400/400?random=1" },
-  { name: "The Weekend", image: "https://picsum.photos/400/400?random=2" },
-  { name: "Adele", image: "https://picsum.photos/400/400?random=3" },
-  { name: "Lana Del Ray", image: "https://picsum.photos/400/400?random=4" },
-  { name: "Harry Styles", image: "https://picsum.photos/400/400?random=5" },
-  { name: "Billie Eilish", image: "https://picsum.photos/400/400?random=6" },
-  { name: "Billie Baby", image: "https://picsum.photos/400/400?random=7" },
-  { name: "Dog Eilish", image: "https://picsum.photos/400/400?random=8" },
-];
-
-const albums = [
-  {
-    title: "Adele 21",
-    artist: "Adele",
-    image: "https://picsum.photos/400/400?random=7",
-  },
-  {
-    title: "Scorpion",
-    artist: "Drake",
-    image: "https://picsum.photos/400/400?random=8",
-  },
-  {
-    title: "Harry's House",
-    artist: "Harry Styles",
-    image: "https://picsum.photos/400/400?random=9",
-  },
-  {
-    title: "Born To Die",
-    artist: "Lana Del Rey",
-    image: "https://picsum.photos/400/400?random=10",
-  },
-  {
-    title: "Beauty Behind the...",
-    artist: "The Weekend",
-    image: "https://picsum.photos/400/400?random=11",
-  },
-  {
-    title: "Beauty Behind the...",
-    artist: "The Weekend",
-    image: "https://picsum.photos/400/400?random=11",
-  },
-  {
-    title: "Beauty Behind the...",
-    artist: "The Weekend",
-    image: "https://picsum.photos/400/400?random=11",
-  },
-  {
-    title: "Beauty Behind the...",
-    artist: "The Weekend",
-    image: "https://picsum.photos/400/400?random=11",
-  },
-  {
-    title: "Beauty Behind the...",
-    artist: "The Weekend",
-    image: "https://picsum.photos/400/400?random=11",
-  },
-  {
-    title: "Beauty Behind the...",
-    artist: "The Weekend",
-    image: "https://picsum.photos/400/400?random=11",
-  },
-];
+import { useEffect, useState } from "react";
+import { getAllAlbums } from "@/actions/album-actions";
+import { Album, User } from "@/types/global";
+import { getAllAritst } from "@/actions/user-actions";
 
 const playlist = [
   {
@@ -148,6 +88,39 @@ const PlaylistCard = ({ title, image }: { title: string; image: string }) => {
 };
 
 export default function MetaData() {
+  const [albums, setAlbums] = useState<Album[]>([]);
+  const [artists, setArtists] = useState<User[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  useEffect(() => {
+    async function fetchArtists() {
+      try {
+        const { artist } = await getAllAritst(); // This returns an object with `artist` array
+        setArtists(artist);
+      } catch (error) {
+        console.error("Error fetching artists:", error);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchArtists();
+  }, []);
+  console.log("art", artists);
+  useEffect(() => {
+    async function fetchAlbums() {
+      try {
+        const fetchedAlbums = await getAllAlbums();
+        setAlbums(fetchedAlbums);
+      } catch (error) {
+        console.error("Error fetching albums:", error);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchAlbums();
+  }, []);
+
   return (
     <div className="text-white space-y-8 w-[90%] flex flex-col">
       <section className="flex flex-col w-full">
@@ -169,9 +142,20 @@ export default function MetaData() {
         </h2>
         <div className="flex flex-row items-center">
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 w-full">
-            {albums.slice(0, 5).map((album, idx) => (
-              <AlbumCard key={idx} title={album.title} image={album.image} artist={album.artist} />
-            ))}
+            {loading ? (
+              <div>Loading...</div>
+            ) : (
+              albums
+                .slice(0, 5)
+                .map((album, idx) => (
+                  <AlbumCard
+                    key={idx}
+                    title={album.albumName}
+                    image={album.photoUrl}
+                    artist={album.publisher.artistName}
+                  />
+                ))
+            )}
           </div>
           {albums.length >= 5 ? <ViewAllFeature link={"/albums"} /> : <div className="flex w-[10%]" />}
         </div>

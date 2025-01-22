@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Label } from "./ui/Label";
 import { Textarea } from "@/components/ui/Textarea";
+import { createPlaylist } from "@/actions/playlist-actions";
 
 interface AddPlaylistModalProps {
   isOpen: boolean;
@@ -30,7 +31,8 @@ export function CreateNewPlaylistForm() {
     playlistName: "",
     description: "",
   });
-
+  const [loading, setLoading] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
   const validateForm = () => {
     let isValid = true;
     const newErrors = {
@@ -38,10 +40,10 @@ export function CreateNewPlaylistForm() {
       description: "",
     };
 
-    if (!formData.playlistName.trim()) {
-      newErrors.playlistName = "Artist name is required";
-      isValid = false;
-    }
+    // if (!formData.playlistName.trim()) {
+    //   newErrors.playlistName = "Artist name is required";
+    //   isValid = false;
+    // }
 
     if (!formData.description.trim()) {
       newErrors.description = "Description is required";
@@ -70,10 +72,26 @@ export function CreateNewPlaylistForm() {
       return;
     }
 
+    setLoading(true);
+    setSuccessMessage("");
+
     try {
-      console.log("Form submitted:", formData);
+      const payload = {
+        playlistName: formData.playlistName,
+        description: formData.description,
+      };
+
+      await createPlaylist({ payload });
+      setSuccessMessage("Playlist created successfully!");
+      setFormData({ playlistName: "", description: "" });
     } catch (error) {
       console.error("Error submitting form:", error);
+      setErrors((prev) => ({
+        ...prev,
+        playlistName: "Failed to create playlist. Please try again.",
+      }));
+    } finally {
+      setLoading(false);
     }
   };
 

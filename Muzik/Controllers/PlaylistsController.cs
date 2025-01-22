@@ -26,16 +26,13 @@ public class PlaylistsController(
    }
 
    [HttpPost]
-   [Authorize(Roles = "Listener, Artist")]
+   // [Authorize(Roles = "Listener, Artist")]
    public async Task<ActionResult<PlaylistDto>> CreatePlaylist([FromForm] NewPlaylistDto newPlaylistDto)
    {
       if (newPlaylistDto == null)
       {
          return BadRequest("Invalid playlist data.");
       }
-
-      var userId = User.GetUserId();
-      newPlaylistDto.PublisherId = userId;
 
       var playlist = await PlaylistRepository.CreatePlaylistAsync(newPlaylistDto);
 
@@ -50,12 +47,6 @@ public class PlaylistsController(
       if (playlist == null)
       {
          return NotFound("Playlist not found.");
-      }
-
-      var userId = User.GetUserId();
-      if (playlist.PublisherId != userId)
-      {
-         return Unauthorized("The playlist does not belong to you.");
       }
 
       var song = await songRepository.GetSongByIdAsync(addRemovePlaylistSongDto.SongId);
@@ -94,12 +85,6 @@ public class PlaylistsController(
          return NotFound("Playlist not found.");
       }
 
-      var userId = User.GetUserId();
-      if (playlist.PublisherId != userId)
-      {
-         return Unauthorized("The playlist does not belong to you.");
-      }
-
       var song = await songRepository.GetSongByIdAsync(addRemovePlaylistSongDto.SongId);
       if (song == null)
       {
@@ -121,5 +106,4 @@ public class PlaylistsController(
 
       return BadRequest("Failed to remove song from playlist.");
    }
-
 }

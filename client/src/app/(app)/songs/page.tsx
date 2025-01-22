@@ -11,6 +11,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuCheckboxItem,
 } from "@/components/ui/DropdownMenu";
+
 import { Song } from "@/types/global";
 
 const genres = [
@@ -305,7 +306,7 @@ export default function AlbumsPage() {
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
                 {songResult.map((song) => (
-                  <SongCard key={song.id} song={song} />
+                  <SongCard key={song.id} song={song as Song} />
                 ))}
               </div>
             </div>

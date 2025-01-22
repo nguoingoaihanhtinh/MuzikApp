@@ -34,6 +34,10 @@ export interface Album {
   createdAt: string;
   updatedAt: string;
   publisherId: number;
+  photoUrl: string;
+  publisher: {
+    artistName: string;
+  };
 }
 
 export interface Playlist {
@@ -62,4 +66,10 @@ export interface PaginatedResponses<T> {
   pageNumber: number;
   pageSize: number;
   totalPages: number;
+}
+
+export interface AlbumPayload {
+  albumName: string;
+  description: string;
+  photoFiles?: File[];
 }
