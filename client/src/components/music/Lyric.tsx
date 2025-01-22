@@ -8,13 +8,16 @@ interface LyricLine {
   time: number;
   text: string;
 }
-
-const Lyric: React.FC = () => {
+interface LyricProps {
+  isBig?: boolean; // Optional prop to control text size
+}
+const Lyric: React.FC<LyricProps> = ({ isBig }) => {
   const { activeSong, currentDuration } = usePlayerStore();
   const { setLoadingState } = useLoading();
   const [lyrics, setLyrics] = useState<LyricLine[]>([]);
   const [currentLineIndex, setCurrentLineIndex] = useState<number | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const lrcUrl = activeSong?.lyricUrl;
 
@@ -23,7 +26,6 @@ const Lyric: React.FC = () => {
       try {
         setLoadingState(true);
         const response = await fetch(lrcUrl || "");
-
         const lrcText = await response.text();
 
         if (!lrcText) {
@@ -41,7 +43,7 @@ const Lyric: React.FC = () => {
     };
 
     fetchLyrics();
-  }, []);
+  }, [lrcUrl]);
 
   useEffect(() => {
     if (!lyrics.length || currentDuration === undefined) {
@@ -70,6 +72,34 @@ const Lyric: React.FC = () => {
     }
   }, [currentLineIndex]);
 
+  // Handle infinite scroll
+  const handleScroll = () => {
+    if (scrollRef.current && !isLoading) {
+      const { scrollTop, scrollHeight, clientHeight } = scrollRef.current;
+      if (scrollTop + clientHeight >= scrollHeight - 50) {
+        loadMoreLyrics();
+      }
+    }
+  };
+
+  const loadMoreLyrics = async () => {
+    setIsLoading(true);
+    try {
+      const response = await fetch(lrcUrl || "");
+      const lrcText = await response.text();
+      if (lrcText) {
+        const parsedLyrics = parseLrc(lrcText);
+        setLyrics((prevLyrics) => [...prevLyrics, ...parsedLyrics]);
+      }
+    } catch (error) {
+      console.error("Error fetching more lyrics:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const fontSize = isBig ? "3rem" : "1.2rem"; // Conditional font size based on `isBig` prop
+
   return (
     <div
       style={{
@@ -79,11 +109,11 @@ const Lyric: React.FC = () => {
         padding: "10px",
       }}
       ref={scrollRef}
+      onScroll={handleScroll}
     >
       {lyrics.map((line, index) => {
         let color = "lightgray";
         let fontWeight = "normal";
-        const fontSize = "2.5rem";
 
         if (index === currentLineIndex) {
           color = "#EE10B0";
@@ -107,6 +137,7 @@ const Lyric: React.FC = () => {
           </div>
         );
       })}
+      {isLoading && <div>Loading more lyrics...</div>}
     </div>
   );
 };

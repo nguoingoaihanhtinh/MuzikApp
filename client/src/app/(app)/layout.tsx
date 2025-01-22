@@ -6,6 +6,7 @@ import Footer from "@/components/AppFooter";
 import MusicPlayer from "@/components/music/MusicPlayer";
 import SongListSideBar from "@/components/SongListSideBar";
 import usePlayerStore from "@/stores/player-store";
+import SongDetailPanel from "@/components/music/SongDetailPanel";
 
 interface ILayoutProps {
   children: React.ReactNode;
@@ -26,7 +27,7 @@ const Layout: React.FC<ILayoutProps> = ({ children }) => {
         </div>
         {isPlaylistVisibility && (
           <div className="relative">
-            <SongListSideBar />
+            <SongDetailPanel />
           </div>
         )}
       </div>
