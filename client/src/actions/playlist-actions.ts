@@ -23,12 +23,16 @@ export async function getAllPlaylists(): Promise<Playlist[]> {
 
 export async function createPlaylist({ payload }: { payload: PlaylistPayload }): Promise<void> {
   try {
+    const formData = new FormData();
+    formData.append("PlaylistName", payload.playlistName);
+    formData.append("Description", payload.description);
+
     await client("/api/playlists", {
       method: "POST",
-      body: JSON.stringify(payload),
+      body: formData,
     });
   } catch (error) {
-    console.error("get all playlists error: ", error);
+    console.error("Error creating playlist: ", error);
     throw error;
   }
 }

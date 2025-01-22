@@ -12,7 +12,5 @@ public class Playlist
     public DateTime UploadDate { get; set; } = DateTime.UtcNow;
     public List<PlaylistSong> Songs { get; set; } = [];
 
-    // Navigation properties
-    public int PublisherId { get; set; }
-    public AppUser Publisher { get; set; } = null!;
+
 }

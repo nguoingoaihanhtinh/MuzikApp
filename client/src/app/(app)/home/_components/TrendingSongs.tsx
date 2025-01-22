@@ -17,6 +17,7 @@ export default function TrendingSongs() {
       return data;
     },
   });
+  console.log("data", data);
   const { setLoadingState } = useLoading();
   React.useEffect(() => {
     setLoadingState(isLoading);
