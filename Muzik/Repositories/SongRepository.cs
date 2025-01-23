@@ -9,13 +9,19 @@ namespace Muzik.Repositories;
 public class SongRepository(DataContext context, IMapper mapper) : ISongRepository
 {
     public async Task<Song?> GetSongByIdAsync(int id)
-    {
-        return await context.Songs
-            .Include(s => s.Genres).ThenInclude(g => g.Genre)
-            .Include(s => s.Publisher)
-            .Include(s => s.Artists).ThenInclude(sa => sa.Artist)
-            .SingleOrDefaultAsync(s => s.Id == id);
-    }
+        {
+            var song = await context.Songs
+                .Include(s => s.Genres).ThenInclude(g => g.Genre)
+                .Include(s => s.Publisher)
+                .Include(s => s.Artists).ThenInclude(sa => sa.Artist)
+                .Include(s => s.Photos) 
+                    .ThenInclude(sp => sp.Photo)
+                .SingleOrDefaultAsync(s => s.Id == id);
+
+            return song;
+        }
+
+
 
     public async Task<Song> AddSongAsync(NewSongDto newSongDto)
     {

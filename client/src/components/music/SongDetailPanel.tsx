@@ -7,8 +7,9 @@ import Lyric from "./Lyric";
 
 const SongDetailPanel = () => {
   const { activeSong } = usePlayerStore();
+  console.log("activeSong", activeSong);
   const [songDetails, setSongDetails] = useState<any>(null);
-
+  console.log("detail", songDetails);
   useEffect(() => {
     if (activeSong) {
       const fetchSongDetails = async () => {
@@ -43,7 +44,18 @@ const SongDetailPanel = () => {
               </p>
             </div>
           </div>
-          <div className="bg"></div>
+          <div
+            className="bg"
+            style={{
+              backgroundImage: `url("${songDetails.songPhotoUrl}")`,
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+              height: "200px",
+              width: "100%",
+              borderRadius: "8px",
+            }}
+          ></div>
+
           <div className="low-container flex flex-col w-full">
             <div className="artists flex items-center justify-between">
               <div className="infor">
