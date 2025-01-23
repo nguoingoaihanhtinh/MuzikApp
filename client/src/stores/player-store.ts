@@ -37,14 +37,19 @@ const usePlayerStore = create<PlayerState>((set, get) => ({
   setPlaylist: (songs) => set({ playlist: songs }),
 
   setActiveTrack: (song) => {
-    if (song) {
+    if (song && song.id !== get().activeSong?.id) {
       set({ activeSong: song });
     }
   },
 
-  onPlay: () => set({ isPlaying: true }),
+  onPlay: () => {
+    if (!get().activeSong) return;
+    set({ isPlaying: true });
+  },
 
-  onPause: () => set({ isPlaying: false }),
+  onPause: () => {
+    set({ isPlaying: false });
+  },
 
   toggleLyricMode: () => set((state) => ({ isLyricVisibility: !state.isLyricVisibility })),
 

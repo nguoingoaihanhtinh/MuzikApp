@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { MdClose, MdFavorite } from "react-icons/md";
+import { MdClose, MdExpandLess, MdExpandMore, MdFavorite } from "react-icons/md";
 import usePlayerStore from "@/stores/player-store";
 import { getSongById } from "@/actions/song-actions";
 import Image from "next/image";
@@ -7,9 +7,9 @@ import Lyric from "./Lyric";
 
 const SongDetailPanel = () => {
   const { activeSong } = usePlayerStore();
-  console.log("activeSong", activeSong);
   const [songDetails, setSongDetails] = useState<any>(null);
-  console.log("detail", songDetails);
+  const [showLyrics, setShowLyrics] = useState(true);
+  const [showDescription, setShowDescription] = useState(true);
   useEffect(() => {
     if (activeSong) {
       const fetchSongDetails = async () => {
@@ -60,9 +60,11 @@ const SongDetailPanel = () => {
             <div className="artists flex items-center justify-between">
               <div className="infor">
                 <h4 className="text-2xl text-white font-bold">{songDetails.songName}</h4>
-                <p className="text-xl text-gray-500 font-semibold">
-                  {songDetails.artists.map((artist: any) => artist.artistName).join(", ")}
-                </p>
+                <div className="text-xl text-gray-500 font-semibold">
+                  {songDetails.artists.map((artist: any, index: number) => (
+                    <div key={artist.artistId || index}>{artist.artistName}</div>
+                  ))}
+                </div>
               </div>
               <div className="icons">
                 <MdFavorite />
@@ -70,11 +72,37 @@ const SongDetailPanel = () => {
             </div>
 
             {/* Lyrics Section */}
-            <div className="lyric bg-blue-800 p-4 mt-4 rounded-xl" style={{ maxHeight: "300px", overflowY: "auto" }}>
-              <h5 className="text-white text-lg font-bold sticky top-0 bg-blue-800 p-1 z-10">Lyrics</h5>
-              <div className="text-lg py-5" style={{ maxHeight: "240px", overflowY: "auto" }}>
-                <Lyric isBig={false} />
+            <div className="lyric-section mt-4">
+              <div
+                className="flex justify-between items-center cursor-pointer"
+                onClick={() => setShowLyrics(!showLyrics)}
+              >
+                <h5 className="text-white text-lg font-bold">Lyrics</h5>
+                {showLyrics ? <MdExpandLess className="text-white" /> : <MdExpandMore className="text-white" />}
               </div>
+              {showLyrics && (
+                <div className="bg-blue-950 p-4 mt-2 rounded-xl" style={{ maxHeight: "300px", overflowY: "auto" }}>
+                  <div className="text-lg " style={{ maxHeight: "240px", overflowY: "auto" }}>
+                    <Lyric isBig={false} />
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Description Section */}
+            <div className="description-section mt-4">
+              <div
+                className="flex justify-between items-center cursor-pointer"
+                onClick={() => setShowDescription(!showDescription)}
+              >
+                <h5 className="text-white text-lg font-bold">Description</h5>
+                {showDescription ? <MdExpandLess className="text-white" /> : <MdExpandMore className="text-white" />}
+              </div>
+              {showDescription && (
+                <div className="p-4 mt-2 rounded-xl bg-gray-800">
+                  <p className="text-gray-300 text-sm mt-2">{songDetails.description}</p>
+                </div>
+              )}
             </div>
           </div>
         </div>

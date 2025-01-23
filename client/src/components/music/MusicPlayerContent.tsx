@@ -8,7 +8,6 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 import DynamicImage from "../custom/DynamicImage";
 import usePlayerStore from "@/stores/player-store";
 import useSound from "use-sound";
-import { generateRandomArtist } from "@/libs/utils";
 
 interface PlaybackControlProps {
   isPlaying: boolean;
@@ -48,11 +47,15 @@ interface ControlButtonProps {
 const ControlButton = ({ icon: Icon, onClick, tooltip, iconColor = "white", disabled = false }: ControlButtonProps) => (
   <Tooltip>
     <TooltipTrigger asChild>
-      <AppButton className="h-9 w-9 group" onClick={onClick} disabled={disabled}>
-        <Icon
-          className={`h-4 w-4 ${iconColor === "white" ? "text-white" : "text-general-pink"} group-hover:scale-110 group-hover:text-general-pink-hover transition-transform ${disabled ? "opacity-50" : ""}`}
-        />
-      </AppButton>
+      <div>
+        {" "}
+        {/* Use div or span to avoid button nesting */}
+        <AppButton className="h-9 w-9 group" onClick={onClick} disabled={disabled}>
+          <Icon
+            className={`h-4 w-4 ${iconColor === "white" ? "text-white" : "text-general-pink"} group-hover:scale-110 group-hover:text-general-pink-hover transition-transform ${disabled ? "opacity-50" : ""}`}
+          />
+        </AppButton>
+      </div>
     </TooltipTrigger>
     {tooltip && <TooltipContent>{tooltip}</TooltipContent>}
   </Tooltip>
@@ -85,7 +88,7 @@ const VolumeControl = ({ volume, onVolumeChange, disabled = false }: VolumeContr
 };
 
 const MusicPlayerContent = () => {
-  const [randomArtists, setRandomArtists] = React.useState("By Anonymous");
+  const [artists, setArtist] = React.useState("By Anonymous");
   const [mounted, setMounted] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(false);
   const {
@@ -111,28 +114,30 @@ const MusicPlayerContent = () => {
     volume: volume,
     onplay: () => {
       setIsLoading(false);
-      onPlay(); // Make sure to update the state when the song starts playing
+      onPlay();
     },
     onend: () => {
       onPause();
       setProgress(0);
     },
     onpause: () => onPause(),
-    format: ["mp3"],
-    onload: () => setIsLoading(false),
+    onload: () => {
+      setIsLoading(false);
+    },
     onloaderror: () => {
       setIsLoading(false);
       console.error("Error loading audio");
     },
+    format: ["mp3"],
   });
 
   const handlePlayPause = () => {
     if (isPlaying) {
-      pause(); // Pause if it's currently playing
+      pause();
     } else {
-      setIsLoading(true);
       if (sound) {
-        sound.play(); // Play the sound, it should continue from the current position
+        sound.seek((progress / 100) * sound.duration()); // Start from the current progress
+        sound.play();
       } else {
         play(); // This will start the sound if it's not already loaded
       }
@@ -147,7 +152,6 @@ const MusicPlayerContent = () => {
     const secs = Math.floor(seconds % 60);
     return `${mins}:${secs.toString().padStart(2, "0")}`;
   };
-
   React.useEffect(() => {
     if (!sound) return;
 
@@ -165,11 +169,6 @@ const MusicPlayerContent = () => {
   }, [sound, setCurrentDuration]);
 
   React.useEffect(() => {
-    setMounted(true);
-    setRandomArtists(generateRandomArtist());
-  }, []);
-
-  React.useEffect(() => {
     if (sound) {
       sound.volume(volume);
     }
@@ -179,6 +178,7 @@ const MusicPlayerContent = () => {
     if (activeSong?.musicUrl) {
       setIsLoading(true);
       play();
+      setProgress(0);
     }
   }, [activeSong, play]);
 
@@ -188,7 +188,14 @@ const MusicPlayerContent = () => {
       sound?.unload();
     };
   }, [sound]);
-
+  React.useEffect(() => {
+    setMounted(true);
+    if (activeSong?.artists && activeSong.artists.length > 0) {
+      setArtist(activeSong.artists[0].artistName);
+    } else {
+      setArtist("By Anonymous");
+    }
+  }, [activeSong]);
   const handleSeek = (value: number) => {
     if (sound && sound.duration()) {
       const newPosition = (value / 100) * sound.duration();
@@ -213,7 +220,7 @@ const MusicPlayerContent = () => {
           />
           <div className="flex flex-col">
             <span className="text-sm font-medium text-general-pink">{activeSong.songName}</span>
-            <span className="text-xs text-muted-foreground">{randomArtists}</span>
+            <span className="text-xs text-muted-foreground">{artists}</span>
           </div>
         </div>
 
@@ -240,7 +247,7 @@ const MusicPlayerContent = () => {
               step={0.1}
               className="w-full"
               disabled={isLoading}
-              onValueChange={handleSeek}
+              onValueChange={(value) => handleSeek(value[0])}
             />
             <span className="text-xs tabular-nums text-muted-foreground">
               {sound ? formatTime(sound.duration()) : "0:00"}
