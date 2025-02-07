@@ -17,7 +17,7 @@ interface PlaybackControlProps {
 
 const PlaybackControl = ({ isPlaying, onClick, isLoading }: PlaybackControlProps) => (
   <Tooltip>
-    <TooltipTrigger>
+    <TooltipTrigger asChild>
       <AppButton
         className="h-9 w-9 bg-general-pink text-general-white hover:bg-general-pink-hover hover:scale-110 rounded-full group"
         onClick={onClick}

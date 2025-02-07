@@ -131,7 +131,7 @@ public class Seed
     private static async Task SeedSongPhotos(DataContext context)
     {
         var songs = await context.Songs.ToListAsync();
-        var photoId = 6;  
+        var photoId = 8;  
         foreach (var song in songs)
         {
             var photosForSong = new List<SongPhoto>();
@@ -294,7 +294,7 @@ public class Seed
     private static async Task SeedAlbumPhotos(DataContext context)
     {
         var albums = await context.Albums.ToListAsync();
-        var photoId = 10;
+        var photoId = 13;
 
         foreach (var album in albums)
         {

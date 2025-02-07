@@ -22,5 +22,29 @@
     "MusicUrl": "https://res.cloudinary.com/dxatsebhv/video/upload/v1736233177/songs/3/mot-doi.mp3",
     "LyricUrl": "https://res.cloudinary.com/dxatsebhv/raw/upload/v1736251821/songs/3/lyric/mot-doi-lyric.lrc",
     "songPhotoUrl": "https://res.cloudinary.com/dxatsebhv/image/upload/v1736249991/songs/3/image/mot-doi-1.jpg"
+  },
+  {
+    "SongName": "Thiên lý ơi",
+    "Description": "Nhạc của Jack 5tr.",
+    "PublisherId": 6,
+    "MusicUrl": "https://res.cloudinary.com/dxatsebhv/video/upload/v1736233200/songs/4/thien-ly-oi.mp3",
+    "LyricUrl": "https://res.cloudinary.com/dxatsebhv/raw/upload/v1737632404/songs/4/lyric/thien-ly-oi.lrc-2.lrc",
+    "songPhotoUrl": "https://res.cloudinary.com/dxatsebhv/image/upload/v1737631716/songs/4/image/thien-ly-oi-1.jpg"
+  },
+  {
+    "SongName": "Bạch Nguyệt Quang",
+    "Description": "Bạch Nguyệt Quang là một ca khúc mang âm hưởng nhẹ nhàng, sâu lắng, kể về một mối tình đã qua. 'Bạch Nguyệt Quang' trong tiếng Hán có nghĩa là ánh trăng trắng, tượng trưng cho một người yêu cũ, một mối tình đẹp nhưng đã trở thành ký ức.",
+    "PublisherId": 7,
+    "MusicUrl": "https://res.cloudinary.com/dxatsebhv/video/upload/v1736233267/songs/7/bach-nguyet-quang.mp3",
+    "LyricUrl": "https://res.cloudinary.com/dxatsebhv/raw/upload/v1737632419/songs/5/lyric/bach-nguyet-quang.lrc-2.lrc",
+    "songPhotoUrl": "https://res.cloudinary.com/dxatsebhv/image/upload/v1737631916/songs/5/image/bach-nguyet-quang-1.jpg"
+  },
+  {
+    "SongName": "Ngỏ lời",
+    "Description": "'Ngỏ Lời' của Suni Hạ Linh là một bản tình ca ngọt ngào và sâu lắng, chạm đến trái tim của những ai đã từng trải qua cảm giác yêu đơn phương. Với giai điệu nhẹ nhàng, lời bài hát chân thật và giọng hát truyền cảm của Suni Hạ Linh, ca khúc đã vẽ nên một bức tranh tình yêu đẹp đẽ nhưng cũng đầy băn khoăn. Qua bài hát, người nghe như được sống lại những cảm xúc tuổi trẻ, những rung động đầu đời và ước mơ về một tình yêu đẹp.",
+    "PublisherId": 8,
+    "MusicUrl": "https://res.cloudinary.com/dxatsebhv/video/upload/v1736233382/songs/6/ngo-loi.mp3",
+    "LyricUrl": "https://res.cloudinary.com/dxatsebhv/raw/upload/v1737632437/songs/6/lyric/ngo-loi.lrc-2.lrc",
+    "songPhotoUrl": "https://res.cloudinary.com/dxatsebhv/image/upload/v1737632212/songs/6/image/ngo-loi-1.jpg"
   }
 ]

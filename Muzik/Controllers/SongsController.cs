@@ -33,9 +33,15 @@ public class SongsController(
     }
 
     [HttpPost]
-    [Authorize(Roles = "Artist")]
+    [Authorize]
     public async Task<ActionResult<SongDto>> AddSong([FromForm] NewSongDto newSongDto)
     {
+         var userClaims = User.Claims;
+           Console.WriteLine("userclam");
+        foreach (var claim in userClaims)
+        {
+            Console.WriteLine($"Claim type: {claim.Type}, Claim value: {claim.Value}");
+        }
         if (newSongDto == null)
         {
             return BadRequest("Invalid song data.");
@@ -153,18 +159,15 @@ public class SongsController(
                 isMain = false;
             }
         }
-
         if (!await songRepository.SaveChangesAsync())
         {
             return BadRequest("Failed to add song.");
         }
-
         return CreatedAtAction(
             nameof(GetSongById),
             new { id = song.Id },
             mapper.Map<SongDto>(song)
         );
-
     }
 
     [HttpPut("{id:int}")]
