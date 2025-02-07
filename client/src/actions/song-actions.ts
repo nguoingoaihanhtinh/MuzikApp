@@ -90,7 +90,7 @@ export async function getSongById(songId: number): Promise<Song> {
 
 export async function addSong(formData: FormData): Promise<AddSongResponse> {
   const token = await getAuthTokenFromCookies();
-
+  console.log("token", token);
   try {
     const response = await client<Song>("/api/songs", {
       method: "POST",

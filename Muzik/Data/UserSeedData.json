@@ -3,7 +3,8 @@
     "FirstName": "Khoa",
     "LastName": "Phan",
     "UserName": "sirLora",
-    "Email": "khoaphan@gmail.com",
+    "Email": "user@gmail.com",
+    "password": "Khoa1234",
     "Gender": "male",
     "About": "Incididunt nisi proident in veniam eiusmod. Do aute duis sunt eu. Aute exercitation eu consectetur magna enim non anim deserunt in.\r\n"
   },
@@ -41,5 +42,32 @@
     "Email": "14casper@gmail.com",
     "Gender": "male",
     "About": "Ut ut cillum in incididunt veniam fugiat dolor. Ex magna eiusmod eiusmod mollit Lorem commodo laboris anim cupidatat dolore est in Lorem minim. Officia commodo aliquip veniam adipisicing sunt eiusmod sint.\r\n"
+  },
+  {
+    "FirstName": "Trịnh",
+    "LastName": "Tuấn",
+    "UserName": "jackj97",
+    "ArtistName": "Jack",
+    "Email": "jack@j97.com",
+    "Gender": "male",
+    "About": "Jack là một ca sĩ - nhạc sĩ trẻ tài năng của Việt Nam. Với phong cách âm nhạc trẻ trung, hiện đại, Jack đã nhanh chóng chiếm được cảm tình của khán giả trẻ. Các sản phẩm âm nhạc của Jack thường mang đậm dấu ấn cá nhân, thể hiện những câu chuyện về tình yêu, tuổi trẻ và cuộc sống."
+  },
+  {
+    "FirstName": "Táo",
+    "LastName": "",
+    "UserName": "taomusic",
+    "ArtistName": "Táo",
+    "Email": "taomusic@gmail.com",
+    "Gender": "male",
+    "About": "Táo là một ca sĩ - nhạc sĩ trẻ đầy triển vọng của Vpop. Với những sáng tác độc đáo và giọng hát cá tính, Táo đã tạo nên một dấu ấn riêng trong làng nhạc Việt. Phong cách âm nhạc của Táo đa dạng, từ những bản ballad sâu lắng đến những ca khúc sôi động."
+  },
+  {
+    "FirstName": "Suni",
+    "LastName": "Hạ Linh",
+    "UserName": "sunihalinh",
+    "ArtistName": "Suni Hạ Linh",
+    "Email": "sunihalinh@gmail.com",
+    "Gender": "female",
+    "About": "Suni Hạ Linh là một ca sĩ trẻ sở hữu giọng hát ngọt ngào, truyền cảm. Với những ca khúc ballad sâu lắng, Suni Hạ Linh đã chinh phục trái tim của nhiều khán giả. Cô được biết đến với phong cách âm nhạc nhẹ nhàng, lãng mạn."
   }
 ]
