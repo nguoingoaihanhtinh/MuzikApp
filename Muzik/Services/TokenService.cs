@@ -22,7 +22,7 @@ public class TokenService(IConfiguration config, UserManager<AppUser> userManage
         var roles = await userManager.GetRolesAsync(user);
 
         claims.AddRange(roles.Select(role => new Claim(ClaimTypes.Role, role)));
-
+        Console.WriteLine("clanm" + claims);
         var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
 
         var tokenDescriptor = new SecurityTokenDescriptor
