@@ -36,12 +36,10 @@ public class SongsController(
     [Authorize]
     public async Task<ActionResult<SongDto>> AddSong([FromForm] NewSongDto newSongDto)
     {
-         var userClaims = User.Claims;
-           Console.WriteLine("userclam");
-        foreach (var claim in userClaims)
-        {
-            Console.WriteLine($"Claim type: {claim.Type}, Claim value: {claim.Value}");
-        }
+       var user = User;
+        Console.WriteLine($"🔹 User Identity: {user.Identity?.Name}");
+        Console.WriteLine($"🔹 Is Authenticated: {user.Identity?.IsAuthenticated}");
+        Console.WriteLine($"🔹 User Roles: {string.Join(", ", user.Claims.Where(c => c.Type == ClaimTypes.Role).Select(c => c.Value))}");
         if (newSongDto == null)
         {
             return BadRequest("Invalid song data.");

@@ -156,6 +156,20 @@ public class AuthController(
     // {
 
     // }
+    [HttpGet("test-token")]
+    public IActionResult TestToken(string token)
+    {
+        try
+        {
+            var handler = new JwtSecurityTokenHandler();
+            var jsonToken = handler.ReadJwtToken(token);
+            return Ok(jsonToken);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest($"❌ Invalid Token: {ex.Message}");
+        }
+    }
 
     private async Task<bool> UserExists(string email)
     {

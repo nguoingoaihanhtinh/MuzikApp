@@ -9,11 +9,24 @@ public static class ClaimsPrincipalExtensions
         return email;
     }
 
-    public static int GetUserId(this ClaimsPrincipal user)
+  public static int GetUserId(this ClaimsPrincipal user)
     {
-        var userId = int.Parse(user.FindFirstValue(ClaimTypes.NameIdentifier)
-            ?? throw new Exception("Cannot get user id from token"));
+        Console.WriteLine("🔍 Debugging Claims in GetUserId(): " + user);
+        foreach (var claim in user.Claims)
+        {
+            Console.WriteLine($"🔹 Claim Type: {claim.Type}, Value: {claim.Value}");
+        }
 
-        return userId;
+        var userIdClaim = user.FindFirstValue(ClaimTypes.NameIdentifier) 
+                        ?? user.FindFirstValue(JwtRegisteredClaimNames.Sub) 
+                        ?? user.FindFirstValue(JwtRegisteredClaimNames.NameId) 
+                        ?? throw new Exception("Cannot get user id from token");
+
+        Console.WriteLine($"✅ Extracted User ID: {userIdClaim}");
+        return int.Parse(userIdClaim);
     }
+
+
+
+
 }

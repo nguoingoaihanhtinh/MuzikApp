@@ -6,30 +6,59 @@ namespace Muzik.Extensions;
 public static class IdentityServiceExtensions
 {
     public static IServiceCollection AddIdentityServices(this IServiceCollection services, IConfiguration config)
+{
+    Console.WriteLine("AddIdentityServices method is being called...");
+
+    services.AddIdentityCore<AppUser>(opt =>
     {
-        services.AddIdentityCore<AppUser>(opt =>
+        opt.Password.RequireNonAlphanumeric = false;
+    })
+        .AddRoles<AppRole>()
+        .AddRoleManager<RoleManager<AppRole>>()
+        .AddEntityFrameworkStores<DataContext>();
+
+    services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        var tokenKey = config["TokenKey"] ?? throw new Exception("TokenKey not found.");
+        Console.WriteLine("JwtBearer configuration starting...");
+        Console.WriteLine("TokenKey: " + tokenKey);
+
+        options.TokenValidationParameters = new TokenValidationParameters
         {
-            opt.Password.RequireNonAlphanumeric = false;
-        })
-            .AddRoles<AppRole>()
-            .AddRoleManager<RoleManager<AppRole>>()
-            .AddEntityFrameworkStores<DataContext>();
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(tokenKey)),
+            ValidateIssuer = false,
+            ValidateAudience = false,
+            ValidateLifetime = false,
+            RoleClaimType = ClaimTypes.Role
+        };
 
-        services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-            .AddJwtBearer(options =>
+   options.Events = new JwtBearerEvents
+    {
+        OnMessageReceived = context =>
+        {
+            var token = context.Request.Headers["Authorization"].ToString();
+            Console.WriteLine($"🔹 Raw Token Received: '{token}'");
+
+            if (string.IsNullOrEmpty(token))
             {
-                var tokenKey = config["TokenKey"] ?? throw new Exception("TokenKey not found.");
-                options.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(tokenKey)),
-                    ValidateIssuer = false,
-                    ValidateAudience = false,
-                    ValidateLifetime = true,
-                    RoleClaimType = ClaimTypes.Role 
-                };
-            });
+                Console.WriteLine("❌ No token received!");
+            }
 
-        return services;
-    }
+            context.Token = token;
+
+            return Task.CompletedTask;
+        }
+    };
+
+
+
+
+    });
+
+
+    return services;
+}
+
 }

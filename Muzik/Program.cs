@@ -2,13 +2,14 @@ using Muzik.Data;
 using Muzik.Entities;
 using Muzik.Extensions;
 using Muzik.Middleware;
-
+using Microsoft.IdentityModel.Logging;
 var builder = WebApplication.CreateBuilder(args);
 builder.Logging.AddConsole();
 
 builder.Services.AddApplicationServices(builder.Configuration);
 builder.Services.AddIdentityServices(builder.Configuration);
 
+IdentityModelEventSource.ShowPII = true;
 builder.Services.AddSwaggerGen();
 builder.Logging.AddConsole(options =>
 {
