@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import {
@@ -19,6 +19,8 @@ import { useUser } from "@/contexts/UserContext";
 import { useLoading } from "@/contexts/LoadingContext";
 import { IconType } from "react-icons/lib";
 import AddPlaylistModal from "./AddPlaylistModal";
+import { Playlist } from "@/types/global";
+import { getMyPlaylists } from "@/actions/playlist-actions";
 
 export type SidebarItem = {
   name: string;
@@ -48,14 +50,7 @@ const sidebarSections: SidebarSection[] = [
       { name: "Most Played", icon: FaMusic, href: "/most-played" },
     ],
   },
-  {
-    title: "Playlist and Favorite",
-    items: [
-      { name: "Your Favorites", icon: FaHeart, href: "/your-favorites" },
-      { name: "Your Playlist", icon: FaMusic, href: "/your-playlist" },
-      { name: "Add Playlist", icon: FaPlus, href: "/add-playlist" },
-    ],
-  },
+
   {
     title: "General",
     items: [
@@ -70,9 +65,25 @@ const Sidebar = ({ paddingBottom = "0" }) => {
   const { logout, isAuthenticated } = useUser();
   const { setLoadingState } = useLoading();
   const [isAddPlaylistModalOpen, setIsAddPlaylistModalOpen] = useState(false);
+  const [playlists, setPlaylists] = useState<Playlist[]>([]);
+  const [favorites, setFavorites] = useState<Playlist[]>([]);
   const pathname = usePathname();
   const router = useRouter();
-
+  useEffect(() => {
+    console.log("hellop");
+    async function fetchPlaylists() {
+      try {
+        const playlistData = await getMyPlaylists();
+        const favoriteData = await getMyPlaylists();
+        console.log("playl9ost", playlistData);
+        setPlaylists(playlistData.slice(0, 3)); // Limit to 3 items
+        setFavorites(favoriteData.slice(0, 1));
+      } catch (error) {
+        console.error("Failed to fetch playlists:", error);
+      }
+    }
+    fetchPlaylists();
+  }, []);
   const handleLogout = () => {
     setLoadingState(true);
     logout();
@@ -97,8 +108,9 @@ const Sidebar = ({ paddingBottom = "0" }) => {
           }}
           className="title-text-gradient mb-8 cursor-pointer"
         >
-          VERA
+          Lora
         </h1>
+
         {sidebarSections.map((section, index) => (
           <div key={section.title} className={index !== sidebarSections.length - 1 ? "mb-4" : ""}>
             <h3 className="sidebar-second-header tracking-wide mb-3 whitespace-nowrap">{section.title}</h3>
@@ -116,22 +128,6 @@ const Sidebar = ({ paddingBottom = "0" }) => {
                         {item.name}
                       </span>
                     </button>
-                  ) : item.href === "/add-playlist" ? (
-                    <div
-                      onClick={() => {
-                        setIsAddPlaylistModalOpen(true);
-                      }}
-                      className={`group flex items-center space-x-3 hover:bg-slate-400/20 p-2 rounded-md cursor-pointer`}
-                    >
-                      <item.icon
-                        className={`text-xs group-hover:text-pink-500 ${pathname === item.href ? "text-general-pink" : ""}`}
-                      />
-                      <span
-                        className={`sub-header whitespace-nowrap group-hover:text-pink-500 ${pathname === item.href ? "text-general-pink" : ""}`}
-                      >
-                        {item.name}
-                      </span>
-                    </div>
                   ) : (
                     <Link
                       href={item.href}
@@ -152,12 +148,54 @@ const Sidebar = ({ paddingBottom = "0" }) => {
             </ul>
           </div>
         ))}
-        <AddPlaylistModal
-          isOpen={isAddPlaylistModalOpen}
-          onClose={() => {
-            setIsAddPlaylistModalOpen(false);
-          }}
-        />
+
+        {/* Playlist and Favorites Section */}
+        <div className="mb-4">
+          <h3 className="sidebar-second-header tracking-wide mb-3 whitespace-nowrap">Playlist and Favorite</h3>
+          <ul>
+            {/* Favorites Section */}
+            {favorites.map((fav) => (
+              <li key={fav.id} className="flex flex-col">
+                <Link
+                  href={`/favorite/${fav.id}`}
+                  className="group flex items-center space-x-3 hover:bg-slate-400/20 p-2 rounded-md"
+                >
+                  <FaHeart className="text-xs group-hover:text-pink-500" />
+                  <span className="sub-header whitespace-nowrap group-hover:text-pink-500">{fav.playlistName}</span>
+                </Link>
+              </li>
+            ))}
+
+            {/* Playlists Section */}
+            {playlists.map((playlist) => (
+              <li key={playlist.id} className="flex flex-col">
+                <Link
+                  href={`/playlist/${playlist.id}`}
+                  className="group flex items-center space-x-3 hover:bg-slate-400/20 p-2 rounded-md"
+                >
+                  <FaMusic className="text-xs group-hover:text-pink-500" />
+                  <span className="sub-header whitespace-nowrap group-hover:text-pink-500">
+                    {playlist.playlistName}
+                  </span>
+                </Link>
+              </li>
+            ))}
+
+            {/* Add Playlist Button */}
+            <li className="flex flex-col">
+              <div
+                onClick={() => setIsAddPlaylistModalOpen(true)}
+                className="group flex items-center space-x-3 hover:bg-slate-400/20 p-2 rounded-md cursor-pointer"
+              >
+                <FaPlus className="text-xs group-hover:text-pink-500" />
+                <span className="sub-header whitespace-nowrap group-hover:text-pink-500">Add Playlist</span>
+              </div>
+            </li>
+          </ul>
+        </div>
+
+        {/* Add Playlist Modal */}
+        <AddPlaylistModal isOpen={isAddPlaylistModalOpen} onClose={() => setIsAddPlaylistModalOpen(false)} />
       </div>
     </div>
   );

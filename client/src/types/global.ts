@@ -42,6 +42,22 @@ export interface Album {
 
 export interface Playlist {
   id: number;
+  playlistName: string;
+  description: string;
+  totalListeningHours: number;
+  totalSongs: number;
+  createdAt: string;
+  updatedAt: string;
+  uploadDate: string;
+  userId: number;
+  songs: PlaylistSong[];
+}
+
+export interface PlaylistSong {
+  id: number;
+  songName: string;
+  duration: number;
+  artistName: string;
 }
 
 export interface User {

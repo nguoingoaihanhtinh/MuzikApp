@@ -31,13 +31,15 @@ public class PlaylistRepository(DataContext context, IMapper mapper) : IPlaylist
             .FirstOrDefaultAsync(p => p.Id == id);
     }
 
-    public async Task<IEnumerable<Playlist>> GetPlaylistsByUserIdAsync(int userId)
-    {
-        return await context.Playlists
-            .Where(p => p.UserId == userId)
-            .AsNoTracking()
-            .ToListAsync();
-    }
+   public async Task<IEnumerable<Playlist>> GetPlaylistsByUserIdAsync(int userId)
+   {
+      return await context.Playlists
+         .Where(p => p.UserId == userId)
+         .Include(p => p.Songs)
+         .ThenInclude(ps => ps.Song)
+         .ToListAsync();
+   }
+
 
     public async Task<bool> SaveChangesAsync()
     {
