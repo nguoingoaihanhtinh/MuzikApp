@@ -12,5 +12,5 @@ public class Playlist
     public DateTime UploadDate { get; set; } = DateTime.UtcNow;
     public List<PlaylistSong> Songs { get; set; } = [];
 
-
+    public int UserId { get; set; }
 }
