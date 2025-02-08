@@ -33,7 +33,8 @@ public class PlaylistsController(
       {
          return BadRequest("Invalid playlist data.");
       }
-
+      var userId = User.GetUserId();
+        newPlaylistDto.UserId = userId;
       var playlist = await PlaylistRepository.CreatePlaylistAsync(newPlaylistDto);
 
       return mapper.Map<PlaylistDto>(playlist);

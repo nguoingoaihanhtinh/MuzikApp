@@ -1,4 +1,4 @@
-"server only";
+"use server";
 
 import client from "@/services/client";
 import { Playlist } from "@/types/global";
@@ -10,29 +10,23 @@ export interface PlaylistPayload {
 
 export async function getAllPlaylists(): Promise<Playlist[]> {
   try {
-    const response = await client<Playlist[]>("/api/playlists", {
-      method: "GET",
-    });
-
-    return response.data;
+    const response = await client<Playlist[]>("/api/playlists");
+    return response.data ?? [];
   } catch (error) {
-    console.error("get all playlists error: ", error);
+    console.error("Error fetching playlists:", error);
     throw error;
   }
 }
 
-export async function createPlaylist({ payload }: { payload: PlaylistPayload }): Promise<void> {
+export async function createPlaylist(payload: PlaylistPayload): Promise<void> {
   try {
-    const formData = new FormData();
-    formData.append("PlaylistName", payload.playlistName);
-    formData.append("Description", payload.description);
-
     await client("/api/playlists", {
       method: "POST",
-      body: formData,
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
     });
   } catch (error) {
-    console.error("Error creating playlist: ", error);
+    console.error("Error creating playlist:", error);
     throw error;
   }
 }
