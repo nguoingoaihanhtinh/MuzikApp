@@ -1,5 +1,5 @@
 import { toast } from "react-toastify";
-
+import "react-toastify/dist/ReactToastify.css";
 const baseURL = process.env.NEXT_PUBLIC_API_URL;
 
 interface IErrorResponse {

@@ -19,10 +19,24 @@ public class PlaylistsController(
       var playlist = await PlaylistRepository.GetPlaylistByIdAsync(id);
       if (playlist == null)
       {
-         return NotFound();
+         return NotFound("You don't have any playlists. yet!");
       }
 
       return mapper.Map<PlaylistDto>(playlist);
+   }
+   [HttpGet("my")]
+   [Authorize(Roles = "Listener, Artist")]
+   public async Task<ActionResult<IEnumerable<PlaylistDto>>> GetMyPlaylists()
+   {
+      var userId = User.GetUserId(); // Lấy userId từ token
+
+      var playlists = await PlaylistRepository.GetPlaylistsByUserIdAsync(userId);
+      if (playlists == null || !playlists.Any())
+      {
+         return NotFound("You don't have any playlists.");
+      }
+
+      return Ok(mapper.Map<IEnumerable<PlaylistDto>>(playlists));
    }
 
    [HttpPost]
@@ -34,7 +48,7 @@ public class PlaylistsController(
          return BadRequest("Invalid playlist data.");
       }
       var userId = User.GetUserId();
-        newPlaylistDto.UserId = userId;
+      newPlaylistDto.UserId = userId;
       var playlist = await PlaylistRepository.CreatePlaylistAsync(newPlaylistDto);
 
       return mapper.Map<PlaylistDto>(playlist);
