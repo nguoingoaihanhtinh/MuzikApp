@@ -20,6 +20,8 @@ import { getAllAritst } from "@/actions/user-actions";
 import { useAddSongMutation } from "../_hooks/useSongMutation";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
+import { useUser } from "@/contexts/UserContext";
+import { AddSongPayload } from "@/actions/song-actions";
 
 const formSchema = z.object({
   songName: z.string().min(1, "Song name is required"),
@@ -39,15 +41,13 @@ const formSchema = z.object({
     )
     .refine((file) => file.size <= 20 * 1024 * 1024, "File size must be less than 20MB"),
   photoFiles: z
-    .instanceof(File, { message: "Photo is required" })
+    .array(z.instanceof(File))
+    .min(1, "At least one photo is required")
     .refine(
-      (file) => ["image/jpeg", "image/png", "image/webp"].includes(file.type),
+      (files) => files.every((file) => ["image/jpeg", "image/png", "image/webp"].includes(file.type)),
       "Only JPEG, PNG, and WEBP image files are allowed"
     )
-    .refine(
-      (file) => file.size <= 5 * 1024 * 1024, // 5MB limit
-      "File size must be less than 5MB"
-    ),
+    .refine((files) => files.every((file) => file.size <= 5 * 1024 * 1024), "Each photo file must be less than 5MB"),
   genreIds: z.array(z.number()).min(1, "At least one genre is required"),
   coAritstIds: z.array(z.number()).optional(),
 });
@@ -56,6 +56,7 @@ type FormValues = z.infer<typeof formSchema>;
 
 export default function UploadForm() {
   const router = useRouter();
+  const { userDetails } = useUser();
   const { data: genresData } = useQuery({
     queryKey: ["genres", "upload_song"],
     queryFn: async () => {
@@ -107,7 +108,7 @@ export default function UploadForm() {
     return useDropzone({
       onDrop,
       accept: acceptMap[fieldName as keyof typeof acceptMap],
-      maxFiles: 1,
+      maxFiles: fieldName === "photoFiles" ? 5 : 1,
     });
   };
   const musicDropzone = CreateDropzone("musicFile");
@@ -116,26 +117,28 @@ export default function UploadForm() {
 
   const onSubmit = (data: FormValues) => {
     console.log("data upload form data: ", data);
-    addSongMutation.mutate(
-      {
-        songName: data.songName,
-        description: data.description || "",
-        lyricFile: data.lyricFile,
-        musicFile: data.musicFile,
-        photoFiles: [data.photoFiles],
-        genreIds: data.genreIds,
-        artistIds: data.coAritstIds || [],
+    if (!userDetails?.id || userDetails.roles[0] !== "Artist") {
+      toast.error("You must be an artist to upload a song.");
+      return;
+    }
+    const payload: AddSongPayload = {
+      songName: data.songName,
+      description: data.description || "",
+      lyricFile: data.lyricFile,
+      musicFile: data.musicFile,
+      photoFiles: data.photoFiles,
+      genreIds: data.genreIds,
+      artistIds: [userDetails.id, ...(data.coAritstIds || [])], // Ensure artist ID is included
+    };
+    addSongMutation.mutate(payload, {
+      onSuccess: () => {
+        toast.success("Song uploaded successfully!");
+        router.push("/home");
       },
-      {
-        onSuccess: () => {
-          toast.success("Song uploaded successfully!");
-          router.push("/home");
-        },
-        onError: (error) => {
-          toast.error(error.message);
-        },
-      }
-    );
+      onError: (error) => {
+        toast.error(error.message);
+      },
+    });
   };
 
   return (
@@ -234,13 +237,23 @@ export default function UploadForm() {
                     <FormControl>
                       <div
                         {...photoDropzone.getRootProps()}
-                        className={` h-full w-full aspect-square border-2 border-dashed border-gray-600 rounded-lg p-6 flex items-center justify-center cursor-pointer ${
+                        className={`h-full w-full aspect-square border-2 border-dashed border-gray-600 rounded-lg p-6 flex items-center justify-center cursor-pointer ${
                           photoDropzone.isDragActive ? "border-general-pink" : ""
                         }`}
                       >
-                        <input {...photoDropzone.getInputProps()} />
-                        {field.value ? (
-                          <DynamicImage alt={field.value.name} src={URL.createObjectURL(field.value)} />
+                        <input
+                          {...photoDropzone.getInputProps()}
+                          onChange={(e) => {
+                            const files = Array.from(e.target.files || []);
+                            if (files.length > 0) {
+                              // Ensure only one image is stored in the array
+                              field.onChange([files[0]]);
+                            }
+                          }}
+                        />
+
+                        {field.value && field.value.length > 0 ? (
+                          <DynamicImage alt={field.value[0].name} src={URL.createObjectURL(field.value[0])} />
                         ) : (
                           <div className="flex flex-col items-center gap-4">
                             <FileText className="w-8 h-8" />
@@ -253,6 +266,7 @@ export default function UploadForm() {
                   </FormItem>
                 )}
               />
+
               <div className="flex flex-col space-y-6 p-4 text-foreground w-[100%]">
                 <FormField
                   control={form.control}
