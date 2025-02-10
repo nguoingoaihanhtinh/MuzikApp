@@ -94,12 +94,9 @@ export async function addSong(formData: FormData): Promise<AddSongResponse> {
   try {
     const response = await client<Song>("/api/songs", {
       method: "POST",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+      headers: token ? { Authorization: token } : undefined,
       body: formData,
     });
-
     return {
       id: response.data.id,
       songName: response.data.songName,
@@ -112,7 +109,7 @@ export async function addSong(formData: FormData): Promise<AddSongResponse> {
 
 export async function updateSong(songId: number, formData: FormData): Promise<void> {
   const token = await getAuthTokenFromCookies();
-
+  console.log("data", formData);
   try {
     await client(`/api/songs/${songId}`, {
       method: "DELETE",

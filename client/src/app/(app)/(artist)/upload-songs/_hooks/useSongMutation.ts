@@ -11,41 +11,42 @@ export function useAddSongMutation() {
 
   const mutation = useMutation({
     mutationFn: async (data: AddSongPayload) => {
+      if (!userDetails?.id || userDetails.roles[0] !== "Artist") {
+        throw new Error("You must be an artist to upload a song.");
+      }
+
       const formData = new FormData();
       formData.append("songName", data.songName);
       formData.append("description", data.description);
       formData.append("lyricFile", data.lyricFile || "");
       formData.append("musicFile", data.musicFile);
+
       if (data.photoFiles) {
         data.photoFiles.forEach((file, index) => {
           formData.append(`photoFiles[${index}]`, file);
         });
       }
-      data.genreIds.forEach((id: number) => {
+
+      data.genreIds.forEach((id) => {
         formData.append("genreIds", id.toString());
       });
 
-      data.artistIds.forEach((id: number) => {
+      // Ensure userDetails.id is already included in artistIds
+      data.artistIds.forEach((id) => {
         formData.append("artistIds", id.toString());
       });
-      if (userDetails?.id && userDetails.roles[0] === "Artist") {
-        formData.append("artistIds", userDetails?.id.toString());
-      } else {
-        throw new Error("You have some problems to add this song bro.");
-      }
 
       const response = await addSong(formData);
       return response;
     },
     onSuccess: () => {
-      void queryClient.invalidateQueries({
-        queryKey: ["songs"],
-      });
+      void queryClient.invalidateQueries({ queryKey: ["songs"] });
     },
   });
 
   return mutation;
 }
+
 export function useUpdateSongMutation() {
   const queryClient = useQueryClient();
 

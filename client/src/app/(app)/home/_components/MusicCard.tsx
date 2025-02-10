@@ -14,7 +14,7 @@ const MusicCards = () => {
     queryKey: ["songs"],
     queryFn: async () => await getAllSongs(),
   });
-
+  console.log("new Data", data);
   useEffect(() => {
     setLoadingState(isLoading);
   }, [isLoading, setLoadingState]);
@@ -40,7 +40,7 @@ const MusicCards = () => {
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
             {data?.songs
               ?.sort(() => Math.random() - 0.5)
-              .slice(0, 6)
+              .slice(0, 8)
               .map((song, index) => <SongCard key={index} song={song} />)}
           </div>
         </section>
