@@ -18,6 +18,7 @@ export interface Song {
   lyricPublicId: string | null;
   songPhotoUrl: string;
   songPhotoPublicId: string | null;
+  createdAt?: Date | null;
 }
 
 export interface Genre {
@@ -56,8 +57,19 @@ export interface Playlist {
 export interface PlaylistSong {
   id: number;
   songName: string;
-  duration: number;
-  artistName: string;
+  description?: string | null;
+  publisherName?: string | null;
+  publisherImageUrl?: string | null;
+  artists?: string[] | null;
+  genres: string[];
+  totalView: number;
+  musicUrl: string;
+  musicPublicId?: string | null;
+  lyricUrl?: string | null;
+  lyricPublicId?: string | null;
+  songPhotoUrl?: string | null;
+  songPhotoPublicId?: string | null;
+  createdAt?: Date | null;
 }
 
 export interface User {

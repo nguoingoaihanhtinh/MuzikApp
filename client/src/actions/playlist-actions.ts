@@ -18,6 +18,16 @@ export async function getAllPlaylists(): Promise<Playlist[]> {
     throw error;
   }
 }
+export async function getPlaylistDetail(playlistId: number): Promise<Playlist | null> {
+  try {
+    const response = await client<Playlist>(`/api/playlists/${playlistId}`);
+    return response.data ?? null;
+  } catch (error) {
+    console.error(`Error fetching playlist with ID ${playlistId}:`, error);
+    return null;
+  }
+}
+
 export async function getMyPlaylists(): Promise<Playlist[]> {
   try {
     const token = await getAuthTokenFromCookies(); // Đảm bảo lấy token trước khi tiếp tục
