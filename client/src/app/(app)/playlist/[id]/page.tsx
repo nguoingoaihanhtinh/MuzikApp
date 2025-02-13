@@ -68,7 +68,7 @@ const PlaylistDetailDemo: React.FC = () => {
         <div className="flex-1 overflow-y-auto p-6">
           <div className="bg-dark-blue-gradient rounded-lg">
             <div className="p-4 flex justify-between items-center">
-              <Link href="/">
+              <Link href="/home">
                 <IoArrowBack className="text-4xl text-white" />
               </Link>
               <FiMoreHorizontal className="text-4xl text-white" />

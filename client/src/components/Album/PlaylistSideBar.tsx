@@ -20,8 +20,7 @@ const PlaylistSideBar = () => {
     fetchPlaylists();
   }, []);
   return (
-    <div>
-      <h1>Hello</h1>
+    <div className="w-[20%] p-6">
       {playlists.map((playlist) => {
         const lastSongWithImage = [...playlist.songs]
           .reverse()

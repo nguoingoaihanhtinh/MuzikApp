@@ -30,6 +30,7 @@ public class PlaylistRepository(DataContext context, IMapper mapper) : IPlaylist
             .Include(p => p.Songs)
                 .ThenInclude(ps => ps.Song)
                     .ThenInclude(s => s.Photos) 
+                     .ThenInclude(sp => sp.Photo) 
             .AsNoTracking()
             .FirstOrDefaultAsync(p => p.Id == id);
     }
