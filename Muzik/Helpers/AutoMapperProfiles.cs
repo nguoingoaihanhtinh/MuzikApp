@@ -216,7 +216,9 @@ public class AutoMapperProfiles : Profile
         CreateMap<Genre, GenreDto>();
         CreateMap<AddUpdateGenreDto, Genre>();
         CreateMap<NewPlaylistDto, Playlist>();
-        CreateMap<Playlist, PlaylistDto>();
+        CreateMap<Playlist, PlaylistDto>()
+            .ForMember(dest => dest.Songs, opt => opt.MapFrom(src => src.Songs.Select(ps => ps.Song)));
+
         CreateMap<PlaylistSong, SongDto>()
             .ForMember(
                 s => s.Id,
