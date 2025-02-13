@@ -215,8 +215,12 @@ public class AutoMapperProfiles : Profile
             );
         CreateMap<Genre, GenreDto>();
         CreateMap<AddUpdateGenreDto, Genre>();
-        CreateMap<NewPlaylistDto, Playlist>();
-        CreateMap<Playlist, PlaylistDto>();
+        CreateMap<NewPlaylistDto, Playlist>()
+            .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(_ => DateTime.UtcNow))
+            .ForMember(dest => dest.UpdatedAt, opt => opt.MapFrom(_ => DateTime.UtcNow));
+        CreateMap<Playlist, PlaylistDto>()
+            .ForMember(dest => dest.Songs, opt => opt.MapFrom(src => src.Songs.Select(ps => ps.Song)));
+
         CreateMap<PlaylistSong, SongDto>()
             .ForMember(
                 s => s.Id,

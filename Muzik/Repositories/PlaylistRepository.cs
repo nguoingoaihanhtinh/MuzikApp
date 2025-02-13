@@ -25,11 +25,16 @@ public class PlaylistRepository(DataContext context, IMapper mapper) : IPlaylist
         return await context.Playlists
             .Include(p => p.Songs)
                 .ThenInclude(ps => ps.Song)
-                    .ThenInclude(s => s.Photos)
-                        .ThenInclude(sp => sp.Photo)
-            .AsNoTracking() // Giảm tải hiệu năng nếu chỉ đọc
+                    .ThenInclude(s => s.Artists) 
+                        .ThenInclude(sa => sa.Artist) 
+            .Include(p => p.Songs)
+                .ThenInclude(ps => ps.Song)
+                    .ThenInclude(s => s.Photos) 
+                     .ThenInclude(sp => sp.Photo) 
+            .AsNoTracking()
             .FirstOrDefaultAsync(p => p.Id == id);
     }
+
 
    public async Task<IEnumerable<Playlist>> GetPlaylistsByUserIdAsync(int userId)
    {

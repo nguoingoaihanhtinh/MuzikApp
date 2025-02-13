@@ -12,4 +12,6 @@ public class PlaylistDto
    public int TotalSongs { get; set; }
    public DateTime CreatedAt { get; set; }
    public List<SongDto>? Songs { get; set; }
+   public string? BackgroundImageUrl { get; set; }
+   public string? PlaylistImageUrl { get; set; }
 }
