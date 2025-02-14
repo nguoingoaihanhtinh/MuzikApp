@@ -1,4 +1,4 @@
-"use server";
+"server only";
 
 import client from "@/services/client";
 import { Playlist } from "@/types/global";
@@ -7,6 +7,8 @@ import { getAuthTokenFromCookies } from "./utils";
 export interface PlaylistPayload {
   playlistName: string;
   description: string;
+  playlistImageUrl: string;
+  backgroundImageUrl: string;
 }
 
 export async function getAllPlaylists(): Promise<Playlist[]> {
@@ -30,7 +32,7 @@ export async function getPlaylistDetail(playlistId: number): Promise<Playlist | 
 
 export async function getMyPlaylists(): Promise<Playlist[]> {
   try {
-    const token = await getAuthTokenFromCookies(); // Đảm bảo lấy token trước khi tiếp tục
+    const token = await getAuthTokenFromCookies();
     console.log("Fetched token:", token);
     if (!token) {
       console.error("No auth token found!");
@@ -39,7 +41,7 @@ export async function getMyPlaylists(): Promise<Playlist[]> {
 
     const response = await client<Playlist[]>("/api/playlists/my", {
       headers: {
-        Authorization: token, // Không dùng Bearer, vì Postman không yêu cầu
+        Authorization: token,
       },
     });
 
@@ -51,17 +53,31 @@ export async function getMyPlaylists(): Promise<Playlist[]> {
 }
 
 export async function createPlaylist(payload: PlaylistPayload): Promise<void> {
+  const token = await getAuthTokenFromCookies();
+  if (!token) {
+    throw new Error("User is not authenticated");
+  }
+
   try {
-    await client("/api/playlists", {
+    const formData = new FormData();
+    formData.append("PlaylistName", payload.playlistName);
+    formData.append("Description", payload.description);
+    formData.append("BackgroundImageUrl", payload.backgroundImageUrl);
+    formData.append("PlaylistImageUrl", payload.playlistImageUrl);
+
+    const response = await client<Playlist>("/api/playlists", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
+      headers: token ? { Authorization: token } : undefined,
+      body: formData,
     });
+
+    return response.data;
   } catch (error) {
     console.error("Error creating playlist:", error);
     throw error;
   }
 }
+
 export async function addSongToPlaylist(playlistId: number, songId: number): Promise<void> {
   try {
     await client(`/api/playlists/add-song/${playlistId}`, {

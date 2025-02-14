@@ -1,5 +1,5 @@
 import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+
 const baseURL = process.env.NEXT_PUBLIC_API_URL;
 
 interface IErrorResponse {
@@ -38,7 +38,7 @@ async function client<T>(endpoint: string, config: RequestInit = {}): Promise<Ap
 
     if (!response.ok) {
       const errorData = (await response.json()) as IErrorResponse[];
-      toast.error(errorData[0].description);
+      // toast.error(errorData[0].description);
       throw {
         data: errorData,
         status: response.status,
@@ -66,7 +66,7 @@ async function client<T>(endpoint: string, config: RequestInit = {}): Promise<Ap
     };
   } catch (error) {
     if (error instanceof Error) {
-      toast.error(error.message || "An unexpected error occurred");
+      // toast.error(error.message || "An unexpected error occurred");
       throw {
         data: { code: "UNEXPECTED_ERROR", description: error.message },
         status: 500,
