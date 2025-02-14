@@ -10,12 +10,16 @@ import { Button } from "@/components/ui/Button";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { getPlaylistDetail } from "@/actions/playlist-actions";
-import { Playlist, PlaylistSong } from "@/types/global";
+import { Playlist, PlaylistSong, Song } from "@/types/global";
+
+import usePlayerStore from "@/stores/player-store";
+import PlayButton from "@/components/music/PlayButton";
 
 const PlaylistDetailDemo: React.FC = () => {
   const { id } = useParams();
   const [playlist, setPlaylist] = useState<Playlist | null>(null);
   const [sortConfig, setSortConfig] = useState<{ key: string; direction: string } | null>(null);
+  const { setActiveTrack, setPlaylist: setPlayerPlaylist } = usePlayerStore();
 
   useEffect(() => {
     if (id) {
@@ -35,6 +39,11 @@ const PlaylistDetailDemo: React.FC = () => {
   if (!playlist) {
     return <div>Loading...</div>;
   }
+
+  const handlePlayMusic = (song: PlaylistSong) => {
+    setActiveTrack(song as Song);
+    setPlayerPlaylist([song as Song]);
+  };
 
   const getSortIcon = (column: string) => {
     if (!sortConfig || sortConfig.key !== column) return null;
@@ -105,6 +114,7 @@ const PlaylistDetailDemo: React.FC = () => {
                     </Button>
                   </TableHead>
                   <TableHead>Artists</TableHead>
+                  <TableHead>Play</TableHead>
                 </TableHeader>
                 <TableBody>
                   {playlist.songs.map((song, index) => (
@@ -127,6 +137,12 @@ const PlaylistDetailDemo: React.FC = () => {
                         {Array.isArray(song.artists)
                           ? song.artists.map((artist) => artist.artistName).join(", ")
                           : "Unknown Artist"}
+                      </TableCell>
+                      <TableCell>
+                        <PlayButton
+                          onClick={() => handlePlayMusic(song)}
+                          aria-label={`Play ${song.songName || "song"}`}
+                        />
                       </TableCell>
                     </TableRow>
                   ))}
