@@ -121,4 +121,31 @@ public class PlaylistsController(
 
       return BadRequest("Failed to remove song from playlist.");
    }
+
+   [HttpDelete("{id:int}")]
+   [Authorize(Roles = "Listener, Artist")]
+   public async Task<IActionResult> DeletePlaylist(int id)
+   {
+      var userId = User.GetUserId();
+      var playlist = await PlaylistRepository.GetPlaylistByIdAsync(id);
+
+      if (playlist == null)
+      {
+         return NotFound("Playlist not found.");
+      }
+
+      if (playlist.UserId != userId) 
+      {
+         return Forbid();
+      }
+
+      var success = await PlaylistRepository.DeletePlaylistAsync(id);
+      if (!success)
+      {
+         return BadRequest("Failed to delete playlist.");
+      }
+
+      return NoContent(); 
+   }
+
 }

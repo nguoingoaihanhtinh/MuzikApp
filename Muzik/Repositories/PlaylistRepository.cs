@@ -50,4 +50,19 @@ public class PlaylistRepository(DataContext context, IMapper mapper) : IPlaylist
     {
         return await context.SaveChangesAsync() > 0;
     }
+
+    public async Task<bool> DeletePlaylistAsync(int id)
+    {
+        var playlist = await context.Playlists
+            .Include(p => p.Songs)
+            .FirstOrDefaultAsync(p => p.Id == id);
+
+        if (playlist == null)
+        {
+            return false;
+        }
+
+        context.Playlists.Remove(playlist);
+        return await context.SaveChangesAsync() > 0;
+    }
 }
