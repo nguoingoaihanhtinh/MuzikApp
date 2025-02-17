@@ -9,12 +9,12 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Button } from "@/components/ui/Button";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { getPlaylistDetail } from "@/actions/playlist-actions";
+import { getPlaylistDetail, removeSongFromPlaylist } from "@/actions/playlist-actions";
 import { Playlist, PlaylistSong, Song } from "@/types/global";
 
 import usePlayerStore from "@/stores/player-store";
 import PlayButton from "@/components/music/PlayButton";
-import { GoKebabHorizontal, GoPlay } from "react-icons/go";
+import { GoKebabHorizontal, GoPlay, GoTrash } from "react-icons/go";
 
 const PlaylistDetailDemo: React.FC = () => {
   const { id } = useParams();
@@ -28,7 +28,7 @@ const PlaylistDetailDemo: React.FC = () => {
       fetchPlaylistDetail(Number(id));
     }
   }, [id]);
-  console.log("playlost", playlist);
+
   const fetchPlaylistDetail = async (playlistId: number) => {
     try {
       const data = await getPlaylistDetail(playlistId);
@@ -48,30 +48,13 @@ const PlaylistDetailDemo: React.FC = () => {
     setCurrentSongId(song.id);
   };
 
-  const getSortIcon = (column: string) => {
-    if (!sortConfig || sortConfig.key !== column) return null;
-    return sortConfig.direction === "ascending" ? (
-      <FaSortAmountUpAlt className="text-white" />
-    ) : (
-      <FaSortAmountDown className="text-white" />
-    );
-  };
-
-  const sortSongs = (key: keyof PlaylistSong) => {
-    let direction = "ascending";
-    if (sortConfig?.key === key && sortConfig.direction === "ascending") {
-      direction = "descending";
+  const handleRemoveSong = async (songId: number) => {
+    try {
+      await removeSongFromPlaylist(Number(id), songId);
+      setPlaylist((prev) => (prev ? { ...prev, songs: prev.songs.filter((song) => song.id !== songId) } : null));
+    } catch (error) {
+      console.error("Error removing song from playlist:", error);
     }
-
-    const sortedSongs = [...playlist!.songs].sort((a, b) => {
-      const valueA = a[key] ?? (key === "createdAt" ? "9999-12-31" : "");
-      const valueB = b[key] ?? (key === "createdAt" ? "9999-12-31" : "");
-
-      return direction === "ascending" ? (valueA < valueB ? -1 : 1) : valueA > valueB ? -1 : 1;
-    });
-
-    setSortConfig({ key, direction });
-    setPlaylist((prev) => (prev ? { ...prev, songs: sortedSongs } : null));
   };
 
   return (
@@ -109,22 +92,15 @@ const PlaylistDetailDemo: React.FC = () => {
                 <TableHeader>
                   <TableHead>#</TableHead>
                   <TableHead></TableHead>
-                  <TableHead>
-                    <Button variant="ghost" onClick={() => sortSongs("songName")}>
-                      Title {getSortIcon("songName")}
-                    </Button>
-                  </TableHead>
-                  <TableHead>
-                    <Button variant="ghost" onClick={() => sortSongs("createdAt")}>
-                      Release {getSortIcon("createdAt")}
-                    </Button>
-                  </TableHead>
+                  <TableHead>Title</TableHead>
+                  <TableHead>Release</TableHead>
                   <TableHead>Artists</TableHead>
                   <TableHead>Play</TableHead>
+                  <TableHead>Remove</TableHead>
                 </TableHeader>
                 <TableBody>
                   {playlist.songs.map((song, index) => (
-                    <TableRow key={song.id}>
+                    <TableRow key={song.id} className={currentSongId === song.id ? "bg-gray-200" : ""}>
                       <TableCell>{index + 1}</TableCell>
                       <TableCell>
                         <Image
@@ -145,12 +121,17 @@ const PlaylistDetailDemo: React.FC = () => {
                           : "Unknown Artist"}
                       </TableCell>
                       <TableCell>
-                        <button onClick={() => handlePlayMusic(song)} aria-label={`Play ${song.songName || "song"}`}>
+                        <button onClick={() => handlePlayMusic(song)}>
                           {currentSongId === song.id ? (
                             <GoKebabHorizontal className="text-[#EE10B0] text-2xl" />
                           ) : (
                             <GoPlay className="text-[#EE10B0] text-2xl" />
                           )}
+                        </button>
+                      </TableCell>
+                      <TableCell>
+                        <button onClick={() => handleRemoveSong(song.id)}>
+                          <GoTrash className="text-red-500 text-2xl" />
                         </button>
                       </TableCell>
                     </TableRow>

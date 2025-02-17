@@ -29,6 +29,7 @@ const PlaylistSideBar = () => {
         return (
           <PlaylistCard
             key={playlist.id}
+            id={playlist.id}
             image={lastSongWithImage?.songPhotoUrl ?? "/default-placeholder.jpg"}
             title={playlist.playlistName}
             songCount={playlist.totalSongs}

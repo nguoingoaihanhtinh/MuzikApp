@@ -10,7 +10,7 @@ export interface PlaylistPayload {
   playlistImageUrl: string;
   backgroundImageUrl: string;
 }
-
+const token = await getAuthTokenFromCookies();
 export async function getAllPlaylists(): Promise<Playlist[]> {
   try {
     const response = await client<Playlist[]>("/api/playlists");
@@ -32,8 +32,6 @@ export async function getPlaylistDetail(playlistId: number): Promise<Playlist | 
 
 export async function getMyPlaylists(): Promise<Playlist[]> {
   try {
-    const token = await getAuthTokenFromCookies();
-    console.log("Fetched token:", token);
     if (!token) {
       console.error("No auth token found!");
       return [];
@@ -81,8 +79,8 @@ export async function createPlaylist(payload: PlaylistPayload): Promise<void> {
 export async function addSongToPlaylist(playlistId: number, songId: number): Promise<void> {
   try {
     await client(`/api/playlists/add-song/${playlistId}`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
+      method: "PUT",
+      headers: token ? { Authorization: token } : undefined,
       body: JSON.stringify({ songId }),
     });
   } catch (error) {
@@ -93,8 +91,8 @@ export async function addSongToPlaylist(playlistId: number, songId: number): Pro
 export async function removeSongFromPlaylist(playlistId: number, songId: number): Promise<void> {
   try {
     await client(`/api/playlists/remove-song/${playlistId}`, {
-      method: "DELETE",
-      headers: { "Content-Type": "application/json" },
+      method: "PUT",
+      headers: token ? { Authorization: token } : undefined,
       body: JSON.stringify({ songId }),
     });
   } catch (error) {
