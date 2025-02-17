@@ -52,6 +52,8 @@ export interface Playlist {
   uploadDate: string;
   userId: number;
   songs: PlaylistSong[];
+  backgroundImageUrl: string;
+  playlistImageUrl: string;
 }
 
 export interface PlaylistSong {

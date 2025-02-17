@@ -14,19 +14,21 @@ import { Playlist, PlaylistSong, Song } from "@/types/global";
 
 import usePlayerStore from "@/stores/player-store";
 import PlayButton from "@/components/music/PlayButton";
+import { GoKebabHorizontal, GoPlay } from "react-icons/go";
 
 const PlaylistDetailDemo: React.FC = () => {
   const { id } = useParams();
   const [playlist, setPlaylist] = useState<Playlist | null>(null);
   const [sortConfig, setSortConfig] = useState<{ key: string; direction: string } | null>(null);
   const { setActiveTrack, setPlaylist: setPlayerPlaylist } = usePlayerStore();
+  const [currentSongId, setCurrentSongId] = useState<number | null>(null);
 
   useEffect(() => {
     if (id) {
       fetchPlaylistDetail(Number(id));
     }
   }, [id]);
-
+  console.log("playlost", playlist);
   const fetchPlaylistDetail = async (playlistId: number) => {
     try {
       const data = await getPlaylistDetail(playlistId);
@@ -43,6 +45,7 @@ const PlaylistDetailDemo: React.FC = () => {
   const handlePlayMusic = (song: PlaylistSong) => {
     setActiveTrack(song as Song);
     setPlayerPlaylist([song as Song]);
+    setCurrentSongId(song.id);
   };
 
   const getSortIcon = (column: string) => {
@@ -75,7 +78,12 @@ const PlaylistDetailDemo: React.FC = () => {
     <div className="flex min-h-screen w-full overflow-hidden">
       <div className="flex flex-col w-full overflow-hidden">
         <div className="flex-1 overflow-y-auto p-6">
-          <div className="bg-dark-blue-gradient rounded-lg">
+          <div
+            className="rounded-lg bg-cover bg-center"
+            style={{
+              backgroundImage: `url(${encodeURI(playlist.backgroundImageUrl)})`,
+            }}
+          >
             <div className="p-4 flex justify-between items-center">
               <Link href="/home">
                 <IoArrowBack className="text-4xl text-white" />
@@ -84,12 +92,10 @@ const PlaylistDetailDemo: React.FC = () => {
             </div>
 
             <div className="p-4 grid grid-cols-12 items-start gap-12">
-              <Image
-                src={playlist.songPhotoUrl || "https://via.placeholder.com/268"}
+              <img
+                src={playlist.playlistImageUrl || "https://via.placeholder.com/268"}
                 alt={playlist.playlistName}
-                width={268}
-                height={268}
-                className="col-span-3 rounded-md object-cover shadow-2xl"
+                className="col-span-3 rounded-md object-cover shadow-2xl w-[268px] h-[268px]"
               />
               <div className="flex flex-col col-span-6 text-white">
                 <h1 className="text-3xl font-bold mb-2">{playlist.playlistName}</h1>
@@ -139,10 +145,13 @@ const PlaylistDetailDemo: React.FC = () => {
                           : "Unknown Artist"}
                       </TableCell>
                       <TableCell>
-                        <PlayButton
-                          onClick={() => handlePlayMusic(song)}
-                          aria-label={`Play ${song.songName || "song"}`}
-                        />
+                        <button onClick={() => handlePlayMusic(song)} aria-label={`Play ${song.songName || "song"}`}>
+                          {currentSongId === song.id ? (
+                            <GoKebabHorizontal className="text-[#EE10B0] text-2xl" />
+                          ) : (
+                            <GoPlay className="text-[#EE10B0] text-2xl" />
+                          )}
+                        </button>
                       </TableCell>
                     </TableRow>
                   ))}

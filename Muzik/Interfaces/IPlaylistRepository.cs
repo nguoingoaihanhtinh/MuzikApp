@@ -9,5 +9,5 @@ public interface IPlaylistRepository
    Task<Playlist?> GetPlaylistByIdAsync(int id);
    Task<bool> SaveChangesAsync();
    Task<IEnumerable<Playlist>> GetPlaylistsByUserIdAsync(int userId); 
-
+   Task<bool> DeletePlaylistAsync(int id);
 }
