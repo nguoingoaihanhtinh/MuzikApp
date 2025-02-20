@@ -130,7 +130,7 @@ export default function MetaData() {
         <div className="flex flex-row items-center">
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 w-full">
             {artists.slice(0, 6).map((artist, idx) => (
-              <ArtistCard key={idx} name={artist.name} image={artist.image} />
+              <ArtistCard key={idx} name={artist.artistName} image={artist.photoUrl} />
             ))}
           </div>
           {artists.length >= 6 ? <ViewAllFeature link="/artists" /> : <div className="flex w-[10%]" />}

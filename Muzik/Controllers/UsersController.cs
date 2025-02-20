@@ -164,7 +164,7 @@ public class UsersController(
         return Ok(users);
     }
 
-    [Authorize]
+
     [HttpGet("artists")]
     public async Task<ActionResult<IEnumerable<UserDto>>> GetArtists([FromQuery] UserParams userParams)
     {

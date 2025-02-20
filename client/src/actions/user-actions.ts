@@ -14,9 +14,7 @@ export async function getAllAritst(): Promise<ArtistsReponse> {
   try {
     const response = await client<User[]>("/api/users/artists", {
       method: "GET",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+      headers: token ? { Authorization: token } : undefined,
     });
 
     return {
