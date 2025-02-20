@@ -25,7 +25,16 @@ namespace Muzik.Services
         {
             var emailMessage = new MimeMessage();
             emailMessage.From.Add(new MailboxAddress(config.Value.DisplayName, config.Value.From));
-            emailMessage.To.Add(message.To); // Use the MailboxAddress directly without validation
+
+            // Ensure message.To is not null and is a valid email
+            if (message.To == null || string.IsNullOrWhiteSpace(message.To.Address) ||
+                !Regex.IsMatch(message.To.Address, @"^[^@\s]+@[^@\s]+\.[^@\s]+$"))
+            {
+                throw new ArgumentException("Invalid recipient email address.");
+            }
+
+            emailMessage.To.Add(message.To); // Directly add MailboxAddress
+
             emailMessage.Subject = message.Subject;
             emailMessage.Body = new TextPart(MimeKit.Text.TextFormat.Html)
             {
@@ -34,6 +43,7 @@ namespace Muzik.Services
 
             return emailMessage;
         }
+
         private async Task SendAsync(MimeMessage mailMessage)
         {
             using var client = new MailKit.Net.Smtp.SmtpClient();
