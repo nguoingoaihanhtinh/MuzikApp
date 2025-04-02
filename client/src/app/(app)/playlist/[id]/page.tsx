@@ -1,25 +1,20 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { FaSortAmountDown, FaSortAmountUpAlt } from "react-icons/fa";
 import { IoArrowBack } from "react-icons/io5";
 import { FiMoreHorizontal } from "react-icons/fi";
 import Image from "next/image";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/TableV2";
-import { Button } from "@/components/ui/Button";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { getPlaylistDetail, removeSongFromPlaylist } from "@/actions/playlist-actions";
 import { Playlist, PlaylistSong, Song } from "@/types/global";
-
 import usePlayerStore from "@/stores/player-store";
-import PlayButton from "@/components/music/PlayButton";
 import { GoKebabHorizontal, GoPlay, GoTrash } from "react-icons/go";
 
 const PlaylistDetailDemo: React.FC = () => {
   const { id } = useParams();
   const [playlist, setPlaylist] = useState<Playlist | null>(null);
-  const [sortConfig, setSortConfig] = useState<{ key: string; direction: string } | null>(null);
   const { setActiveTrack, setPlaylist: setPlayerPlaylist } = usePlayerStore();
   const [currentSongId, setCurrentSongId] = useState<number | null>(null);
 
@@ -42,9 +37,42 @@ const PlaylistDetailDemo: React.FC = () => {
     return <div>Loading...</div>;
   }
 
+  // Convert PlaylistSong to Song format
+  const convertToSong = (playlistSong: PlaylistSong): Song => {
+    return {
+      id: playlistSong.id,
+      songName: playlistSong.songName,
+      description: playlistSong.description || null,
+      publisherName: playlistSong.publisherName || "",
+      publisherImageUrl: playlistSong.publisherImageUrl || "",
+      artists: [
+        {
+          id: 0,
+          artistName: Array.isArray(playlistSong.artists) ? playlistSong.artists.join(", ") : "Unknown Artist",
+        },
+      ],
+      genres: playlistSong.genres,
+      totalView: playlistSong.totalView,
+      musicUrl: playlistSong.musicUrl,
+      musicPublicId: playlistSong.musicPublicId || null,
+      lyricUrl: playlistSong.lyricUrl || null,
+      lyricPublicId: playlistSong.lyricPublicId || null,
+      songPhotoUrl: playlistSong.songPhotoUrl || "",
+      songPhotoPublicId: playlistSong.songPhotoPublicId || null,
+      createdAt: playlistSong.createdAt,
+    };
+  };
+
   const handlePlayMusic = (song: PlaylistSong) => {
-    setActiveTrack(song as Song);
-    setPlayerPlaylist([song as Song]);
+    // Set the full playlist but starting from the selected song
+    const songIndex = playlist.songs.findIndex((s) => s.id === song.id);
+    const reorderedSongs = [...playlist.songs.slice(songIndex), ...playlist.songs.slice(0, songIndex)];
+
+    // Convert all songs to proper Song format
+    const convertedSongs = reorderedSongs.map(convertToSong);
+
+    setActiveTrack(convertToSong(song));
+    setPlayerPlaylist(convertedSongs);
     setCurrentSongId(song.id);
   };
 
@@ -115,11 +143,7 @@ const PlaylistDetailDemo: React.FC = () => {
                       <TableCell>
                         {song.createdAt ? new Date(song.createdAt).toLocaleDateString() : "Unknown"}
                       </TableCell>
-                      <TableCell>
-                        {Array.isArray(song.artists)
-                          ? song.artists.map((artist) => artist.artistName).join(", ")
-                          : "Unknown Artist"}
-                      </TableCell>
+                      <TableCell>{Array.isArray(song.artists) ? song.artists.join(", ") : "Unknown Artist"}</TableCell>
                       <TableCell>
                         <button onClick={() => handlePlayMusic(song)}>
                           {currentSongId === song.id ? (

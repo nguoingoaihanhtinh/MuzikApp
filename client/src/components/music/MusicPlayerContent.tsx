@@ -117,8 +117,12 @@ const MusicPlayerContent = () => {
       onPlay();
     },
     onend: () => {
-      onPause();
-      setProgress(0);
+      if (playlist.length >= 1) {
+        onNext(); // Play next song if available
+      } else {
+        onPause();
+        setProgress(0);
+      }
     },
     onpause: () => onPause(),
     onload: () => {
@@ -135,12 +139,7 @@ const MusicPlayerContent = () => {
     if (isPlaying) {
       pause();
     } else {
-      if (sound) {
-        sound.seek((progress / 100) * sound.duration()); // Start from the current progress
-        sound.play();
-      } else {
-        play(); // This will start the sound if it's not already loaded
-      }
+      play(); // This will maintain the current position automatically
     }
   };
 
@@ -180,10 +179,9 @@ const MusicPlayerContent = () => {
       play();
       setProgress(0);
     }
-  }, [activeSong, play]);
+  }, [activeSong?.id, play]); // Changed dependency to activeSong.id to ensure proper tracking
 
   React.useEffect(() => {
-    sound?.play();
     return () => {
       sound?.unload();
     };
@@ -227,15 +225,33 @@ const MusicPlayerContent = () => {
         {/* Playback Controls */}
         <div className="flex flex-col items-center gap-2">
           <div className="flex items-center gap-4">
-            {playlist.length < 2 && <ControlButton icon={Shuffle} tooltip="Shuffle" disabled={isLoading} />}
-            {playlist.length < 2 && (
-              <ControlButton icon={SkipBack} onClick={onPrevious} tooltip="Previous" disabled={isLoading} />
-            )}
+            <ControlButton icon={Shuffle} tooltip="Shuffle" disabled={isLoading || playlist.length <= 1} />
+            <ControlButton
+              icon={SkipBack}
+              onClick={() => {
+                onPrevious();
+                // Force play after previous if it was playing
+                if (isPlaying) {
+                  setTimeout(() => play(), 0);
+                }
+              }}
+              tooltip="Previous"
+              disabled={isLoading || playlist.length <= 1}
+            />
             <PlaybackControl isPlaying={isPlaying} onClick={handlePlayPause} isLoading={isLoading} />
-            {playlist.length < 2 && (
-              <ControlButton icon={SkipForward} onClick={onNext} tooltip="Next" disabled={isLoading} />
-            )}
-            {playlist.length < 2 && <ControlButton icon={Repeat} tooltip="Repeat" disabled={isLoading} />}
+            <ControlButton
+              icon={SkipForward}
+              onClick={() => {
+                onNext();
+                // Force play after next if it was playing
+                if (isPlaying) {
+                  setTimeout(() => play(), 0);
+                }
+              }}
+              tooltip="Next"
+              disabled={isLoading || playlist.length <= 1}
+            />
+            <ControlButton icon={Repeat} tooltip="Repeat" disabled={isLoading || playlist.length <= 1} />
           </div>
           <div className="flex w-full max-w-md items-center gap-2">
             <span className="text-xs tabular-nums text-muted-foreground">

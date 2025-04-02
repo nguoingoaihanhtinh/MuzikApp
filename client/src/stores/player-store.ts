@@ -56,19 +56,21 @@ const usePlayerStore = create<PlayerState>((set, get) => ({
   togglePlaylistMode: () => set((state) => ({ isPlaylistVisibility: !state.isPlaylistVisibility })),
 
   onNext: () => {
-    const { playlist, activeSong } = get();
+    const { playlist, activeSong, isPlaying } = get();
     if (!activeSong || playlist.length === 0) return;
     const currentIndex = playlist.findIndex((s) => s.id === activeSong.id);
     const nextSong = playlist[(currentIndex + 1) % playlist.length];
-    set({ activeSong: nextSong });
+    // Maintain the playing state when changing songs
+    set({ activeSong: nextSong, isPlaying });
   },
 
   onPrevious: () => {
-    const { playlist, activeSong } = get();
+    const { playlist, activeSong, isPlaying } = get();
     if (!activeSong || playlist.length === 0) return;
     const currentIndex = playlist.findIndex((s) => s.id === activeSong.id);
     const prevSong = playlist[(currentIndex - 1 + playlist.length) % playlist.length];
-    set({ activeSong: prevSong });
+    // Maintain the playing state when changing songs
+    set({ activeSong: prevSong, isPlaying });
   },
 
   setVolume: (volume) => set({ volume }),
