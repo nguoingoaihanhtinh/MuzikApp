@@ -66,34 +66,56 @@ const SongCard = ({ song }: { song: Song }) => {
         <PlayButton onClick={handlePlayMusic} aria-label={`Play ${song.songName || "song"}`} />
       </div>
 
-      {/* Add to Playlist Button */}
-      <div className="absolute top-2 right-2">
+      {/* Add to Queue and Playlist Buttons */}
+      <div className="absolute top-2 right-2 flex flex-col space-y-2">
+        {/* Add to Queue Button */}
         <button
           className="bg-black/70 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition"
-          onClick={() => setShowDropdown(!showDropdown)}
+          onClick={async () => {
+            try {
+              await fetch("http://localhost:5087/api/Queue", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ songId: song.id }),
+              });
+              alert("Song added to queue!");
+            } catch {
+              alert("Failed to add song to queue.");
+            }
+          }}
         >
-          <FiPlus size={18} />
+          Queue
         </button>
 
-        {showDropdown && (
-          <div className="absolute right-0 mt-2 w-48 bg-zinc-800 text-white rounded-md shadow-lg max-h-60 overflow-y-auto z-10">
-            {loading ? (
-              <p className="p-2 text-center">Loading...</p>
-            ) : playlists.length > 0 ? (
-              playlists.map((playlist) => (
-                <button
-                  key={playlist.id}
-                  className="block w-full text-left px-4 py-2 hover:bg-zinc-700"
-                  onClick={() => handleAddToPlaylist(playlist.id)}
-                >
-                  {playlist.playlistName}
-                </button>
-              ))
-            ) : (
-              <p className="p-2 text-center">No playlists found</p>
-            )}
-          </div>
-        )}
+        {/* Add to Playlist Button */}
+        <div className="relative">
+          <button
+            className="bg-black/70 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition"
+            onClick={() => setShowDropdown(!showDropdown)}
+          >
+            <FiPlus size={18} />
+          </button>
+
+          {showDropdown && (
+            <div className="absolute right-0 mt-2 w-48 bg-zinc-800 text-white rounded-md shadow-lg max-h-60 overflow-y-auto z-10">
+              {loading ? (
+                <p className="p-2 text-center">Loading...</p>
+              ) : playlists.length > 0 ? (
+                playlists.map((playlist) => (
+                  <button
+                    key={playlist.id}
+                    className="block w-full text-left px-4 py-2 hover:bg-zinc-700"
+                    onClick={() => handleAddToPlaylist(playlist.id)}
+                  >
+                    {playlist.playlistName}
+                  </button>
+                ))
+              ) : (
+                <p className="p-2 text-center">No playlists found</p>
+              )}
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

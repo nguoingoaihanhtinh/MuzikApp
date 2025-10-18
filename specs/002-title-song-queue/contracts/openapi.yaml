@@ -1,0 +1,51 @@
+openapi: 3.0.3
+info:
+  title: Song Queue API
+  version: 0.1.0
+paths:
+  /api/queue:
+    get:
+      summary: Get current user queue
+      responses:
+        "200":
+          description: OK
+  /api/queue/add:
+    post:
+      summary: Add a song to queue
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                songId: { type: string }
+              required: [songId]
+      responses:
+        "200": { description: OK }
+  /api/queue/{songId}:
+    delete:
+      summary: Remove song from queue
+      parameters:
+        - in: path
+          name: songId
+          required: true
+          schema: { type: string }
+      responses:
+        "200": { description: OK }
+  /api/queue/reorder:
+    put:
+      summary: Reorder queue
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                orderedSongIds:
+                  type: array
+                  items: { type: string }
+              required: [orderedSongIds]
+      responses:
+        "200": { description: OK }
