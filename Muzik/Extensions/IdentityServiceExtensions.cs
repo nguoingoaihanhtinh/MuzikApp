@@ -21,8 +21,7 @@ public static class IdentityServiceExtensions
     .AddJwtBearer(options =>
     {
         var tokenKey = config["TokenKey"] ?? throw new Exception("TokenKey not found.");
-        Console.WriteLine("JwtBearer configuration starting...");
-        Console.WriteLine("TokenKey: " + tokenKey);
+    Console.WriteLine("JwtBearer configuration starting...");
 
         options.TokenValidationParameters = new TokenValidationParameters
         {
@@ -38,16 +37,14 @@ public static class IdentityServiceExtensions
     {
         OnMessageReceived = context =>
         {
-            var token = context.Request.Headers["Authorization"].ToString();
-            Console.WriteLine($"🔹 Raw Token Received: '{token}'");
-
-            if (string.IsNullOrEmpty(token))
+            var authHeader = context.Request.Headers["Authorization"].ToString();
+            if (!string.IsNullOrWhiteSpace(authHeader))
             {
-                Console.WriteLine("❌ No token received!");
+                const string bearerPrefix = "Bearer ";
+                context.Token = authHeader.StartsWith(bearerPrefix, StringComparison.OrdinalIgnoreCase)
+                    ? authHeader.Substring(bearerPrefix.Length).Trim()
+                    : authHeader.Trim();
             }
-
-            context.Token = token;
-
             return Task.CompletedTask;
         }
     };

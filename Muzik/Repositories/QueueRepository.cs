@@ -32,6 +32,15 @@ public class QueueRepository(DataContext context) : IQueueRepository
         }
     }
 
+    public async Task RemoveByIdAsync(int queueItemId, CancellationToken ct = default)
+    {
+        var entity = await _context.QueueItems.FirstOrDefaultAsync(q => q.Id == queueItemId, ct);
+        if (entity is not null)
+        {
+            _context.QueueItems.Remove(entity);
+        }
+    }
+
     public async Task ReorderAsync(int userId, IReadOnlyList<int> orderedSongIds, CancellationToken ct = default)
     {
         var existing = await _context.QueueItems

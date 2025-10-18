@@ -43,4 +43,27 @@ public class QueueService(IQueueRepository queueRepository, ISongRepository song
         await queueRepository.SaveChangesAsync(ct);
         return await GetQueueAsync(userId, ct);
     }
+
+    public async Task<QueueDto> AdvanceAsync(int userId, CancellationToken ct = default)
+    {
+        var items = await queueRepository.GetUserQueueAsync(userId, ct);
+        if (items.Count == 0)
+        {
+            // Nothing to advance
+            return await GetQueueAsync(userId, ct);
+        }
+
+        // Remove the current (position 0) by Id and shift others up
+        var current = items.OrderBy(i => i.Position).First();
+        await queueRepository.RemoveByIdAsync(current.Id, ct);
+
+        var remaining = items.Where(i => i.SongId != current.SongId)
+            .OrderBy(i => i.Position).ToList();
+        for (var idx = 0; idx < remaining.Count; idx++)
+        {
+            remaining[idx].Position = idx;
+        }
+        await queueRepository.SaveChangesAsync(ct);
+        return await GetQueueAsync(userId, ct);
+    }
 }
