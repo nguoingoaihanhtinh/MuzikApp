@@ -1,0 +1,219 @@
+openapi: 3.0.3
+info:
+  title: MuzikApp Auth API
+  version: 0.1.0
+  description: Authentication endpoints for registration and login stabilization.
+servers:
+  - url: http://localhost:5000
+paths:
+  /api/auth/validate-signup:
+    post:
+      summary: Validate registration data and send pincode
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RegisterDto"
+      responses:
+        "200":
+          description: Pincode sent
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+        "400":
+          $ref: "#/components/responses/Error"
+  /api/auth/verify-pincode:
+    post:
+      summary: Verify the email pincode
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                pincode:
+                  type: string
+      responses:
+        "200":
+          description: Verification succeeded
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  verified:
+                    type: boolean
+        "400":
+          $ref: "#/components/responses/Error"
+  /api/auth/signup:
+    post:
+      summary: Create the user account after verification
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RegisterDto"
+      responses:
+        "200":
+          description: User created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserDto"
+        "400":
+          $ref: "#/components/responses/Error"
+  /api/auth/login:
+    post:
+      summary: Login and receive a JWT
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginDto"
+      responses:
+        "200":
+          description: User with token
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserDto"
+        "401":
+          $ref: "#/components/responses/Error"
+  /api/auth/resend-code:
+    post:
+      summary: Resend pincode with cooldown
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+      responses:
+        "200":
+          description: Code resent
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+        "429":
+          $ref: "#/components/responses/Error"
+  /api/auth/email-exists:
+    post:
+      summary: Check if email exists (UX hint)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+      responses:
+        "200":
+          description: Existence result
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  exists:
+                    type: boolean
+  /api/auth/test-token:
+    get:
+      summary: Development-only token decode
+      parameters:
+        - in: query
+          name: token
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Token details
+        "400":
+          $ref: "#/components/responses/Error"
+components:
+  responses:
+    Error:
+      description: Structured error
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+  schemas:
+    RegisterDto:
+      type: object
+      properties:
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          format: password
+        gender:
+          type: string
+        role:
+          type: string
+          enum: [Listener, Artist, Admin]
+    LoginDto:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          format: password
+    UserDto:
+      type: object
+      properties:
+        id:
+          type: integer
+        email:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        gender:
+          type: string
+        image:
+          type: string
+          nullable: true
+        roles:
+          type: array
+          items:
+            type: string
+        token:
+          type: string
+    Error:
+      type: object
+      required: [code, message]
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+        field:
+          type: string
+          nullable: true
