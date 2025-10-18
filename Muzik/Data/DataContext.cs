@@ -33,6 +33,7 @@ IdentityDbContext<
     public required DbSet<SubscriptionPlan> SubscriptionPlans { get; set; }
     public required DbSet<Payment> Payments { get; set; }
     public required DbSet<PaymentDetail> PaymentDetails { get; set; }
+    public required DbSet<QueueItem> QueueItems { get; set; }
 
     override protected void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -263,5 +264,10 @@ IdentityDbContext<
             .HasForeignKey(s => s.TargetUserId)
             .OnDelete(DeleteBehavior.Cascade);
         #endregion
+
+        // Queue configuration
+        modelBuilder.Entity<QueueItem>()
+            .HasIndex(q => new { q.UserId, q.Position })
+            .IsUnique();
     }
 }

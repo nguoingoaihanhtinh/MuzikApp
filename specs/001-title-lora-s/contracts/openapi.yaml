@@ -1,0 +1,166 @@
+openapi: 3.0.3
+info:
+  title: Lora's Music API
+  version: 0.1.0
+servers:
+  - url: https://api.example.com
+paths:
+  /api/auth/register:
+    post:
+      summary: Register a new user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email: { type: string, format: email }
+                password: { type: string, format: password }
+                role: { type: string, enum: [listener, artist] }
+              required: [email, password]
+      responses:
+        "201": { description: Created }
+  /api/auth/login:
+    post:
+      summary: Login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email: { type: string, format: email }
+                password: { type: string, format: password }
+      responses:
+        "200": { description: OK }
+  /api/songs:
+    get:
+      summary: List songs
+      parameters:
+        - in: query
+          name: query
+          schema: { type: string }
+        - in: query
+          name: genre
+          schema: { type: string }
+        - in: query
+          name: page
+          schema: { type: integer, minimum: 1 }
+      responses:
+        "200": { description: OK }
+    post:
+      summary: Create song (artist)
+      responses:
+        "201": { description: Created }
+  /api/songs/{id}:
+    get:
+      summary: Get song by id
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string }
+      responses:
+        "200": { description: OK }
+    put:
+      summary: Update song
+      responses:
+        "200": { description: OK }
+    delete:
+      summary: Delete song
+      responses:
+        "204": { description: No Content }
+  /api/songs/{id}/stream-url:
+    get:
+      summary: Get time-limited stream URL
+      responses:
+        "200": { description: OK }
+  /api/playlists:
+    get:
+      summary: List my playlists
+      responses:
+        "200": { description: OK }
+    post:
+      summary: Create playlist
+      responses:
+        "201": { description: Created }
+  /api/playlists/{id}:
+    get:
+      summary: Get playlist
+      responses:
+        "200": { description: OK }
+    put:
+      summary: Update playlist
+      responses:
+        "200": { description: OK }
+    delete:
+      summary: Delete playlist
+      responses:
+        "204": { description: No Content }
+  /api/playlists/{id}/tracks:
+    post:
+      summary: Add track to playlist
+      responses:
+        "204": { description: No Content }
+  /api/playlists/{id}/tracks/{trackId}:
+    delete:
+      summary: Remove track from playlist
+      responses:
+        "204": { description: No Content }
+  /api/playlists/{id}/reorder:
+    patch:
+      summary: Reorder playlist tracks
+      responses:
+        "200": { description: OK }
+  /api/artists/me/tracks:
+    get:
+      summary: List my uploaded tracks
+      responses:
+        "200": { description: OK }
+    post:
+      summary: Initialize upload
+      responses:
+        "201": { description: Created }
+  /api/artists/me/tracks/{id}:
+    put:
+      summary: Update my track
+      responses:
+        "200": { description: OK }
+    delete:
+      summary: Delete my track
+      responses:
+        "204": { description: No Content }
+  /api/admin/moderation:
+    get:
+      summary: Get moderation queue
+      responses:
+        "200": { description: OK }
+  /api/admin/moderation/{id}/approve:
+    post:
+      summary: Approve item
+      responses:
+        "200": { description: OK }
+  /api/admin/moderation/{id}/reject:
+    post:
+      summary: Reject item
+      responses:
+        "200": { description: OK }
+  /api/admin/tracks/{id}:
+    delete:
+      summary: Remove track
+      responses:
+        "204": { description: No Content }
+  /api/search:
+    get:
+      summary: Search across entities
+      parameters:
+        - in: query
+          name: query
+          schema: { type: string }
+        - in: query
+          name: type
+          schema: { type: string, enum: [song, artist, album] }
+      responses:
+        "200": { description: OK }

@@ -32,6 +32,8 @@ public static class ApplicationServiceExtensions
         services.AddScoped<ISongPhotoRepository, SongPhotoRepository>();
         services.AddScoped<IUserPhotoRepository, UserPhotoRepository>();
         services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<IQueueRepository, QueueRepository>();
+        services.AddScoped<IQueueService, QueueService>();
         services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
         services.Configure<CloudinarySettings>(config.GetSection("CloudinarySettings"));
         services.Configure<EmailSenderSettings>(config.GetSection("EmailSenderSettings"));

@@ -6,10 +6,13 @@ import PlayButton from "./PlayButton";
 import usePlayerStore from "@/stores/player-store";
 import { Song, Playlist } from "@/types/global";
 import { FiPlus } from "react-icons/fi";
+import AddToQueueButton from "./AddToQueueButton";
 import { addSongToPlaylist, getMyPlaylists } from "@/actions/playlist-actions";
+import { useQueueSync } from "@/hooks/useQueueSync";
 
 const SongCard = ({ song }: { song: Song }) => {
   const { setActiveTrack, setPlaylist } = usePlayerStore();
+  const { refreshQueue } = useQueueSync();
   const [playlists, setPlaylists] = useState<Playlist[]>([]);
   const [loading, setLoading] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
@@ -30,7 +33,12 @@ const SongCard = ({ song }: { song: Song }) => {
     }
   };
 
-  const handlePlayMusic = () => {
+  const handlePlayMusic = async () => {
+    // Try to sync queue so player can use [current, ...upcoming]
+    try {
+      await refreshQueue();
+    } catch {}
+    // Fallback immediate play single
     setActiveTrack(song);
     setPlaylist([song]);
   };
@@ -40,7 +48,7 @@ const SongCard = ({ song }: { song: Song }) => {
       await addSongToPlaylist(playlistId, song.id);
       alert("Song added to playlist!");
       setShowDropdown(false);
-    } catch (error) {
+    } catch {
       alert("Failed to add song.");
     }
   };
@@ -58,12 +66,15 @@ const SongCard = ({ song }: { song: Song }) => {
         />
       </div>
 
-      <div className="flex flex-row justify-between items-center">
+      <div className="flex flex-row justify-between items-center gap-2">
         <div className="space-y-1 min-w-0 mr-2">
           <h3 className="font-semibold text-sm text-white truncate">{song.songName || "Unknown Song"}</h3>
           <p className="text-xs text-gray-400 truncate">By {artistNames}</p>
         </div>
-        <PlayButton onClick={handlePlayMusic} aria-label={`Play ${song.songName || "song"}`} />
+        <div className="flex items-center gap-2">
+          <AddToQueueButton song={song} />
+          <PlayButton onClick={handlePlayMusic} aria-label={`Play ${song.songName || "song"}`} />
+        </div>
       </div>
 
       {/* Add to Playlist Button */}

@@ -53,19 +53,19 @@ public class AutoMapperProfiles : Profile
             .ForMember(
                 d => d.PublisherImageUrl,
                 o => o.MapFrom(
-                    s => s.Publisher.Photos.FirstOrDefault(x => x.IsMain)!.Photo.Url
+                    s => s.Publisher.Photos.FirstOrDefault(x => x.IsMain) == null ? null : s.Publisher.Photos.FirstOrDefault(x => x.IsMain)!.Photo.Url
                 )
             )
             .ForMember(
                 d => d.SongPhotoUrl,
                 o => o.MapFrom(
-                    s => s.Photos == null ? null : s.Photos.FirstOrDefault(x => x.IsMain)!.Photo.Url
+                    s => s.Photos == null || !s.Photos.Any(x => x.IsMain) ? null : s.Photos.FirstOrDefault(x => x.IsMain)!.Photo.Url
                 )
             )
             .ForMember(
                 d => d.SongPhotoPublicId,
                 o => o.MapFrom(
-                    s => s.Photos == null ? null : s.Photos.FirstOrDefault(x => x.IsMain)!.Photo.PublicId
+                    s => s.Photos == null || !s.Photos.Any(x => x.IsMain) ? null : s.Photos.FirstOrDefault(x => x.IsMain)!.Photo.PublicId
                 )
             )
             .ForMember(

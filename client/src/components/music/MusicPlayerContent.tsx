@@ -8,6 +8,8 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 import DynamicImage from "../custom/DynamicImage";
 import usePlayerStore from "@/stores/player-store";
 import useSound from "use-sound";
+import { useQueueStore } from "@/stores/queue-store";
+import { useQueueSync } from "@/hooks/useQueueSync";
 
 interface PlaybackControlProps {
   isPlaying: boolean;
@@ -100,13 +102,14 @@ const MusicPlayerContent = () => {
     volume,
     setVolume,
     onPrevious,
-    onNext,
     activeSong,
     setCurrentDuration,
     toggleLyricMode,
     togglePlaylistMode,
     playlist,
   } = usePlayerStore();
+  const queueUpcoming = useQueueStore((s) => s.upcoming);
+  const { advance } = useQueueSync();
 
   const [progress, setProgress] = React.useState(0);
 
@@ -116,10 +119,17 @@ const MusicPlayerContent = () => {
       setIsLoading(false);
       onPlay();
     },
-    onend: () => {
-      if (playlist.length >= 1) {
-        onNext(); // Play next song if available
-      } else {
+    onend: async () => {
+      try {
+        const dto = await advance();
+        if (!dto.current) {
+          onPause();
+          setProgress(0);
+        } else {
+          // start playback for the next current track
+          setTimeout(() => play(), 0);
+        }
+      } catch {
         onPause();
         setProgress(0);
       }
@@ -179,7 +189,7 @@ const MusicPlayerContent = () => {
       play();
       setProgress(0);
     }
-  }, [activeSong?.id, play]); // Changed dependency to activeSong.id to ensure proper tracking
+  }, [activeSong?.id, activeSong?.musicUrl, play]);
 
   React.useEffect(() => {
     return () => {
@@ -241,17 +251,18 @@ const MusicPlayerContent = () => {
             <PlaybackControl isPlaying={isPlaying} onClick={handlePlayPause} isLoading={isLoading} />
             <ControlButton
               icon={SkipForward}
-              onClick={() => {
-                onNext();
-                // Force play after next if it was playing
+              onClick={async () => {
+                // Advance server queue then play new current
+                await advance();
+                // If we are already playing, re-trigger play to ensure sound URL swap
                 if (isPlaying) {
                   setTimeout(() => play(), 0);
                 }
               }}
               tooltip="Next"
-              disabled={isLoading || playlist.length <= 1}
+              disabled={isLoading || (queueUpcoming?.length ?? 0) === 0}
             />
-            <ControlButton icon={Repeat} tooltip="Repeat" disabled={isLoading || playlist.length <= 1} />
+            <ControlButton icon={Repeat} tooltip="Repeat" disabled={isLoading || (queueUpcoming?.length ?? 0) === 0} />
           </div>
           <div className="flex w-full max-w-md items-center gap-2">
             <span className="text-xs tabular-nums text-muted-foreground">
