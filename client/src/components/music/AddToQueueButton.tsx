@@ -4,17 +4,21 @@ import { addToQueue } from "@/services/queue.service";
 import type { Song } from "@/types/global";
 import { useTransition } from "react";
 import { toast } from "react-toastify";
+import { useQueueSync } from "@/hooks/useQueueSync";
 
 export default function AddToQueueButton({ song }: { song: Song }) {
   const [isPending, startTransition] = useTransition();
+  const { refreshQueue } = useQueueSync();
 
   const onAdd = () => {
     startTransition(async () => {
       try {
         await addToQueue(song.id);
+        await refreshQueue();
         toast.success("Added to queue");
-      } catch (e: any) {
-        toast.error(e?.data?.description || "Failed to add to queue");
+      } catch (e: unknown) {
+        const err = e as { data?: { description?: string } };
+        toast.error(err?.data?.description || "Failed to add to queue");
       }
     });
   };
