@@ -4,6 +4,7 @@ import React from "react";
 import { FaEdit } from "react-icons/fa";
 
 const EditSongButton = ({ songId }: { songId: string | number }) => {
+  void songId;
   const handleEditSong = () => {};
 
   return (

@@ -1,12 +1,10 @@
 "use client";
 import { getMyPlaylists } from "@/actions/playlist-actions";
 import PlaylistCard from "@/components/ui/PlaylistCard";
-import { useLoading } from "@/contexts/LoadingContext";
 import { Playlist } from "@/types/global";
 import React, { useEffect, useState } from "react";
 
 const PlaylistSideBar = () => {
-  const { setLoadingState } = useLoading();
   const [playlists, setPlaylists] = useState<Playlist[]>([]);
   useEffect(() => {
     async function fetchPlaylists() {

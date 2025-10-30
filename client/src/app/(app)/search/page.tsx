@@ -5,12 +5,11 @@ import AlbumCard from "@/components/ui/AlbumCard";
 import ArtistCard from "@/components/ui/ArtistCard";
 import { Song } from "@/types/global";
 
-const songResult: Song[] = [
+const songResult: Partial<Song>[] = [
   {
     id: 1,
     songName: "Adele 21",
     description: "The debut album by Adele",
-    totalListeningHours: 500,
     musicUrl: "https://via.placeholder.com/200",
     musicPublicId: "adele-21",
     lyricUrl: null,
@@ -19,7 +18,6 @@ const songResult: Song[] = [
     id: 2,
     songName: "Scorpion",
     description: "Drake’s iconic album",
-    totalListeningHours: 800,
     musicUrl: "https://via.placeholder.com/200",
     musicPublicId: "scorpion",
     lyricUrl: null,
@@ -28,7 +26,6 @@ const songResult: Song[] = [
     id: 1,
     songName: "Adele 21",
     description: "The debut album by Adele",
-    totalListeningHours: 500,
     musicUrl: "https://via.placeholder.com/200",
     musicPublicId: "adele-21",
     lyricUrl: null,
@@ -37,7 +34,6 @@ const songResult: Song[] = [
     id: 2,
     songName: "Scorpion",
     description: "Drake’s iconic album",
-    totalListeningHours: 800,
     musicUrl: "https://via.placeholder.com/200",
     musicPublicId: "scorpion",
     lyricUrl: null,
@@ -46,7 +42,6 @@ const songResult: Song[] = [
     id: 1,
     songName: "Adele 21",
     description: "The debut album by Adele",
-    totalListeningHours: 500,
     musicUrl: "https://via.placeholder.com/200",
     musicPublicId: "adele-21",
     lyricUrl: null,
@@ -55,7 +50,6 @@ const songResult: Song[] = [
     id: 2,
     songName: "Scorpion",
     description: "Drake’s iconic album",
-    totalListeningHours: 800,
     musicUrl: "https://via.placeholder.com/200",
     musicPublicId: "scorpion",
     lyricUrl: null,
@@ -64,7 +58,6 @@ const songResult: Song[] = [
     id: 1,
     songName: "Adele 21",
     description: "The debut album by Adele",
-    totalListeningHours: 500,
     musicUrl: "https://via.placeholder.com/200",
     musicPublicId: "adele-21",
     lyricUrl: null,
@@ -73,7 +66,6 @@ const songResult: Song[] = [
     id: 2,
     songName: "Scorpion",
     description: "Drake’s iconic album",
-    totalListeningHours: 800,
     musicUrl: "https://via.placeholder.com/200",
     musicPublicId: "scorpion",
     lyricUrl: null,
@@ -136,7 +128,7 @@ export default function AlbumsPage() {
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
                 {songResult.map((song) => (
-                  <SongCard key={song.id} song={song} />
+                  <SongCard key={song.id as number} song={song as Song} />
                 ))}
               </div>
             </div>

@@ -21,7 +21,7 @@ const LikeButton: React.FC<LikeButtonProps> = ({ songId, size = 20 }) => {
     if (!userDetails?.id) {
       return;
     }
-  }, [songId]);
+  }, [songId, userDetails?.id]);
 
   const handleLike = async () => {
     setIsLiked(!isLiked);

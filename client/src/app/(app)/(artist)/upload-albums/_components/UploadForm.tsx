@@ -15,8 +15,6 @@ import { useQuery } from "@tanstack/react-query";
 import { getAllGenres } from "@/actions/genre-actions";
 import DynamicImage from "@/components/custom/DynamicImage";
 import { getAllSongs } from "@/actions/song-actions";
-import { toast } from "react-toastify";
-import { useRouter } from "next/navigation";
 import GenreSelect from "./GenreSelect";
 import { useEffect } from "react";
 
@@ -40,7 +38,6 @@ const formSchema = z.object({
 type FormValues = z.infer<typeof formSchema>;
 
 export default function UploadForm() {
-  const router = useRouter();
   const { setLoadingState } = useLoading();
   const { data: genresData } = useQuery({
     queryKey: ["genres", "add_album"],
@@ -48,7 +45,7 @@ export default function UploadForm() {
       return await getAllGenres({ pageSize: 30 });
     },
   });
-  const { data: songsData, isLoading: isSongsLoading } = useQuery({
+  const { isLoading: isSongsLoading } = useQuery({
     queryKey: ["songs", "add_album"],
     queryFn: async () => {
       return await getAllSongs();
@@ -96,7 +93,7 @@ export default function UploadForm() {
 
   useEffect(() => {
     setLoadingState(isSongsLoading);
-  }, [isSongsLoading]);
+  }, [isSongsLoading, setLoadingState]);
 
   return (
     <div className="min-h-screen bg-black text-white flex flex-col w-full">
@@ -127,7 +124,10 @@ export default function UploadForm() {
                       >
                         <input {...photoDropzone.getInputProps()} />
                         {field.value ? (
-                          <DynamicImage alt={field.value.name} src={URL.createObjectURL(field.value)} />
+                          <DynamicImage
+                            alt={(field.value as File).name}
+                            src={URL.createObjectURL(field.value as File)}
+                          />
                         ) : (
                           <div className="flex flex-col items-center gap-4">
                             <FileText className="w-8 h-8" />

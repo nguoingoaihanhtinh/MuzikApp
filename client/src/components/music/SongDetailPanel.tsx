@@ -1,12 +1,14 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useState } from "react";
 import { MdClose, MdExpandLess, MdExpandMore, MdFavorite } from "react-icons/md";
 import usePlayerStore from "@/stores/player-store";
 import { getSongById } from "@/actions/song-actions";
-import Image from "next/image";
+// import Image from "next/image";
 import Lyric from "./Lyric";
 
 const SongDetailPanel = () => {
   const { activeSong } = usePlayerStore();
+
   const [songDetails, setSongDetails] = useState<any>(null);
   const [showLyrics, setShowLyrics] = useState(true);
   const [showDescription, setShowDescription] = useState(true);

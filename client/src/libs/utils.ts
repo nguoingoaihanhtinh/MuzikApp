@@ -16,6 +16,7 @@ export function formatDate(date: string) {
   return date.replace(/-/g, "/");
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function convertToFormData(formData: Record<string, any>): FormData {
   const browserFormData = new window.FormData();
   for (const [key, value] of Object.entries(formData)) {

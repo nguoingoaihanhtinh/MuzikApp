@@ -17,7 +17,9 @@ const ProtectedRoute: React.FC<IProtectedRoute> = ({ children }) => {
   const { setLoadingState } = useLoading();
 
   // Define route categories
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const publicRoutes = ["/login", "/signup", "/verify-code", "/reset-password"];
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const appRoutes = [
     "/home",
     "/discover",
@@ -61,7 +63,7 @@ const ProtectedRoute: React.FC<IProtectedRoute> = ({ children }) => {
     if (isAuthenticated && !appRoutes.includes(pathname)) {
       router.push("/home");
     }
-  }, [isAuthenticated, pathname, router, setLoadingState]);
+  }, [appRoutes, isAuthenticated, pathname, publicRoutes, router, setLoadingState]);
 
   return <>{children}</>;
 };

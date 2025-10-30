@@ -21,7 +21,7 @@ export default function TrendingSongs() {
   const { setLoadingState } = useLoading();
   React.useEffect(() => {
     setLoadingState(isLoading);
-  }, [isLoading]);
+  }, [isLoading, setLoadingState]);
 
   return (
     <div className="w-[90%] flex flex-col bg-transparent text-general-white items-center custom1-table">

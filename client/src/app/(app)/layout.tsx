@@ -2,9 +2,9 @@
 import Sidebar from "@/components/Sidebar";
 import React from "react";
 import ProtectedLayout from "./ProtectedLayout";
-import Footer from "@/components/AppFooter";
+// import Footer from "@/components/AppFooter";
 import MusicPlayer from "@/components/music/MusicPlayer";
-import SongListSideBar from "@/components/SongListSideBar";
+// import SongListSideBar from "@/components/SongListSideBar";
 import usePlayerStore from "@/stores/player-store";
 import SongDetailPanel from "@/components/music/SongDetailPanel";
 

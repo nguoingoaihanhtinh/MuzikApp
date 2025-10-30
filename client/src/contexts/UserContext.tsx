@@ -98,9 +98,13 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
       console.log("Response from validate-signup:", response);
 
       if (!response.ok) {
-        const errorData = await response.json();
+        // client(...) returns an ApiResponse<T> shape, not a Fetch Response;
+        // access the structured error payload from response.data instead of response.json()
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const errorData = (response as any)?.data ?? { description: "Unknown error" };
         console.error("Error details:", errorData);
-        throw new Error(errorData?.description || "Unexpected error occurred");
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        throw new Error((errorData as any)?.description || "Unexpected error occurred");
       }
 
       setTempSignupCreds(signupCreds);

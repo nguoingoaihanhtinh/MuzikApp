@@ -38,6 +38,7 @@ export function CreateNewPlaylistForm() {
   });
 
   const [loading, setLoading] = useState(false);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [successMessage, setSuccessMessage] = useState("");
 
   const validateForm = () => {

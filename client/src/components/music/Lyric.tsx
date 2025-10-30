@@ -43,7 +43,7 @@ const Lyric: React.FC<LyricProps> = ({ isBig }) => {
     };
 
     fetchLyrics();
-  }, [lrcUrl]);
+  }, [lrcUrl, setLoadingState]);
 
   useEffect(() => {
     if (!lyrics.length || currentDuration === undefined) {

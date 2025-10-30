@@ -5,6 +5,7 @@ import { ControllerRenderProps } from "react-hook-form";
 
 interface GenreSelectProps {
   genresData: Genre[];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   field: ControllerRenderProps<any, "genreIds">;
 }
 
