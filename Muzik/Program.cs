@@ -11,17 +11,29 @@ builder.Logging.AddConsole();
 // Configure environment-specific settings
 if (builder.Environment.IsProduction())
 {
-    // Use environment variables in production
     builder.Configuration.AddEnvironmentVariables();
 
-    // Override connection string from environment variable if present
+    // Try both CONNECTION_STRING and DATABASE_URL for compatibility
     var connectionString = Environment.GetEnvironmentVariable("CONNECTION_STRING");
+    var databaseUrl = Environment.GetEnvironmentVariable("DATABASE_URL");
+
+    if (!string.IsNullOrEmpty(databaseUrl))
+    {
+        // Convert postgres://... URL into Npgsql format
+        var uri = new Uri(databaseUrl);
+        var userInfo = uri.UserInfo.Split(':');
+
+        connectionString =
+            $"Host={uri.Host};Port={uri.Port};Database={uri.AbsolutePath.TrimStart('/')};" +
+            $"Username={userInfo[0]};Password={userInfo[1]};SSL Mode=Require;Trust Server Certificate=true;";
+    }
+
     if (!string.IsNullOrEmpty(connectionString))
     {
         builder.Configuration["ConnectionStrings:DefaultConnection"] = connectionString;
     }
-
 }
+
 
 builder.Services.AddApplicationServices(builder.Configuration);
 builder.Services.AddIdentityServices(builder.Configuration);
