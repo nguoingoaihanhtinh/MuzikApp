@@ -10,7 +10,7 @@ export interface PlaylistPayload {
   playlistImageUrl: string;
   backgroundImageUrl: string;
 }
-const token = await getAuthTokenFromCookies();
+/* token retrieval moved into functions to avoid top-level await */
 export async function getAllPlaylists(): Promise<Playlist[]> {
   try {
     const response = await client<Playlist[]>("/api/playlists");
@@ -32,6 +32,7 @@ export async function getPlaylistDetail(playlistId: number): Promise<Playlist | 
 
 export async function getMyPlaylists(): Promise<Playlist[]> {
   try {
+    const token = await getAuthTokenFromCookies();
     if (!token) {
       console.error("No auth token found!");
       return [];
@@ -50,7 +51,7 @@ export async function getMyPlaylists(): Promise<Playlist[]> {
   }
 }
 
-export async function createPlaylist(payload: PlaylistPayload): Promise<void> {
+export async function createPlaylist(payload: PlaylistPayload): Promise<Playlist> {
   const token = await getAuthTokenFromCookies();
   if (!token) {
     throw new Error("User is not authenticated");
@@ -78,6 +79,7 @@ export async function createPlaylist(payload: PlaylistPayload): Promise<void> {
 
 export async function addSongToPlaylist(playlistId: number, songId: number): Promise<void> {
   try {
+    const token = await getAuthTokenFromCookies();
     await client(`/api/playlists/add-song/${playlistId}`, {
       method: "PUT",
       headers: token ? { Authorization: token } : undefined,
@@ -90,6 +92,7 @@ export async function addSongToPlaylist(playlistId: number, songId: number): Pro
 }
 export async function removeSongFromPlaylist(playlistId: number, songId: number): Promise<void> {
   try {
+    const token = await getAuthTokenFromCookies();
     await client(`/api/playlists/remove-song/${playlistId}`, {
       method: "PUT",
       headers: token ? { Authorization: token } : undefined,

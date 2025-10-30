@@ -38,7 +38,7 @@ const CodeInput = () => {
 
   const handleVerifyEmail = async () => {
     try {
-      await signup(code);
+      await signup();
     } catch (error) {
       console.error("Error on handleVerifyEmail: ", error);
     }

@@ -103,7 +103,7 @@ const PlaylistDetailDemo: React.FC = () => {
             </div>
 
             <div className="p-4 grid grid-cols-12 items-start gap-12">
-              <img
+              <Image
                 src={playlist.playlistImageUrl || "https://via.placeholder.com/268"}
                 alt={playlist.playlistName}
                 className="col-span-3 rounded-md object-cover shadow-2xl w-[268px] h-[268px]"

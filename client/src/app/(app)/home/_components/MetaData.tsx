@@ -53,12 +53,13 @@ const ViewAllFeature = ({ link }: { link: string }) => {
   );
 };
 
-const ArtistCard = ({ name, image }: { name: string; image: string }) => {
+const ArtistCard = ({ name, image }: { name: string; image?: string | null }) => {
+  const src = image ?? "/default-placeholder.jpg";
   return (
     <div key={name} className="flex flex-col items-center">
       <div className="relative w-full aspect-square">
         <Image
-          src={image}
+          src={src}
           alt={name}
           fill
           className="object-cover rounded-full"

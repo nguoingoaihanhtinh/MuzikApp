@@ -6,6 +6,8 @@ Auto-generated from all feature plans. Last updated: 2025-10-14
 - C# (.NET 8), TypeScript (ES2022), Node 20 LTS + ASP.NET Core Web API, EF Core (Npgsql), AutoMapper, FluentValidation; Next.js (App Router), React, TailwindCSS; Cloudinary SDK (001-title-lora-s)
 - C# (.NET 8), TypeScript (ES2022) + ASP.NET Core Web API, EF Core (Npgsql); Next.js (App Router), React, TailwindCSS (002-title-song-queue)
 - PostgreSQL (QueueItem + queue metadata) (002-title-song-queue)
+- C# (.NET 8), TypeScript (ES2022), Node 20 LTS + ASP.NET Core, EF Core (Npgsql), Next.js, Supabase JS client, AutoMapper, FluentValidation, TailwindCSS (005-description-deploy-application)
+- Supabase PostgreSQL (managed cloud DB) (005-description-deploy-application)
 
 ## Project Structure
 ```
@@ -21,6 +23,7 @@ npm test; npm run lint
 C# (.NET 8), TypeScript (ES2022), Node 20 LTS: Follow standard conventions
 
 ## Recent Changes
+- 005-description-deploy-application: Added C# (.NET 8), TypeScript (ES2022), Node 20 LTS + ASP.NET Core, EF Core (Npgsql), Next.js, Supabase JS client, AutoMapper, FluentValidation, TailwindCSS
 - 002-title-song-queue: Added C# (.NET 8), TypeScript (ES2022) + ASP.NET Core Web API, EF Core (Npgsql); Next.js (App Router), React, TailwindCSS
 - 001-title-lora-s: Added C# (.NET 8), TypeScript (ES2022), Node 20 LTS + ASP.NET Core Web API, EF Core (Npgsql), AutoMapper, FluentValidation; Next.js (App Router), React, TailwindCSS; Cloudinary SDK
 

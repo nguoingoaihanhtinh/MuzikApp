@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import PlayButton from "../music/PlayButton";
+// import PlayButton from "../music/PlayButton";
 
 type PlaylistCardProps = {
   id: number;

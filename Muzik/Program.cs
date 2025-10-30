@@ -3,8 +3,23 @@ using Muzik.Entities;
 using Muzik.Extensions;
 using Muzik.Middleware;
 using Microsoft.IdentityModel.Logging;
+
 var builder = WebApplication.CreateBuilder(args);
 builder.Logging.AddConsole();
+
+// Configure environment-specific settings
+if (builder.Environment.IsProduction())
+{
+    // Use environment variables in production
+    builder.Configuration.AddEnvironmentVariables();
+
+    // Override connection string from environment variable if present
+    var connectionString = Environment.GetEnvironmentVariable("CONNECTION_STRING");
+    if (!string.IsNullOrEmpty(connectionString))
+    {
+        builder.Configuration.GetSection("ConnectionStrings")["DefaultConnection"] = connectionString;
+    }
+}
 
 builder.Services.AddApplicationServices(builder.Configuration);
 builder.Services.AddIdentityServices(builder.Configuration);
@@ -22,8 +37,22 @@ var logger = app.Services.GetRequiredService<ILogger<Program>>();
 logger.LogInformation("Application starting...");
 
 app.UseMiddleware<ExceptionMiddleware>();
-app.UseCors(x => x.AllowAnyHeader().AllowAnyMethod()
-    .WithOrigins("http://localhost:3000"));
+
+// Configure CORS based on environment
+if (app.Environment.IsDevelopment())
+{
+    app.UseCors(x => x.AllowAnyHeader().AllowAnyMethod()
+        .WithOrigins("http://localhost:3000"));
+}
+else
+{
+    var allowedOrigins = Environment.GetEnvironmentVariable("ALLOWED_ORIGINS")?.Split(',')
+        ?? new[] { "https://*.vercel.app" };
+    
+    app.UseCors(x => x.AllowAnyHeader()
+        .AllowAnyMethod()
+        .WithOrigins(allowedOrigins));
+}
 
 app.UseAuthentication();
 app.UseAuthorization();

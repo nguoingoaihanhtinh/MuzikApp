@@ -57,6 +57,7 @@ export default function ChoosePlaylistCard() {
           {allPlaylists.map((playlist) => (
             <PlaylistCard
               key={playlist.id}
+              id={playlist.id}
               image={playlist.image}
               title={playlist.title}
               songCount={playlist.songCount}

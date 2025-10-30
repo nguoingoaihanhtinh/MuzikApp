@@ -1,0 +1,33 @@
+openapi: 3.0.3
+info:
+  title: MuzikApp Supabase Migration API
+  version: 1.0.0
+servers:
+  - url: /api
+paths:
+  /migrate:
+    post:
+      summary: Migrate all data from local database to Supabase
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                dryRun:
+                  type: boolean
+                  description: If true, only validate migration without writing data
+      responses:
+        "200":
+          description: Migration completed successfully
+        "400":
+          description: Migration failed due to validation or data error
+  /verify-migration:
+    get:
+      summary: Verify that all data has been migrated to Supabase
+      responses:
+        "200":
+          description: Verification successful, all data matches
+        "409":
+          description: Data mismatch or missing records

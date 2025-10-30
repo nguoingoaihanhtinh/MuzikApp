@@ -1,0 +1,49 @@
+openapi: 3.0.3
+info:
+  title: MuzikApp Deployment API
+  version: 1.0.0
+servers:
+  - url: /api
+paths:
+  /deploy-frontend:
+    post:
+      summary: Trigger deployment of the frontend (Vercel)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                repoUrl:
+                  type: string
+                envVars:
+                  type: object
+                  additionalProperties:
+                    type: string
+      responses:
+        "200":
+          description: Frontend deployment triggered
+        "400":
+          description: Invalid configuration
+  /deploy-backend:
+    post:
+      summary: Trigger deployment of the backend (Render)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                repoUrl:
+                  type: string
+                envVars:
+                  type: object
+                  additionalProperties:
+                    type: string
+      responses:
+        "200":
+          description: Backend deployment triggered
+        "400":
+          description: Invalid configuration

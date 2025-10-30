@@ -30,6 +30,7 @@ const AddToPlaylist = ({ songId }: { songId: number }) => {
     try {
       await addSongToPlaylist(playlistId, songId);
       alert("Song added to playlist!");
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
       alert("Failed to add song.");
     }

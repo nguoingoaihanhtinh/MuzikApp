@@ -29,4 +29,12 @@ public class QueueController(IQueueService queueService, ISongRepository songRep
         var dto = await queueService.AddToQueueAsync(userId, request.SongId, ct);
         return Ok(dto);
     }
+
+    [HttpPost("advance")]
+    public async Task<ActionResult<QueueDto>> Advance(CancellationToken ct)
+    {
+        var userId = User.GetUserId();
+        var dto = await queueService.AdvanceAsync(userId, ct);
+        return Ok(dto);
+    }
 }

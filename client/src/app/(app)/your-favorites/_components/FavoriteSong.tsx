@@ -18,7 +18,7 @@ const FavoriteSongs = () => {
 
   useEffect(() => {
     setLoadingState(isLoading);
-  }, [isLoading]);
+  }, [isLoading, setLoadingState]);
   return (
     <div className="flex flex-row justify-between w-[90%] items-center pt-2">
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">

@@ -11,7 +11,6 @@ import { Button } from "@/components/ui/Button";
 // import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import Link from "next/link";
 import AddToPlaylistButton from "@/components/ui/AddToPlaylistButton";
-import FavouriteButton from "@/components/ui/FavoriteButton";
 import LikeButton from "@/components/music/LikeButton";
 
 const AlbumDetailDemo: React.FC = () => {
@@ -67,7 +66,6 @@ const AlbumDetailDemo: React.FC = () => {
     key: string;
     direction: string;
   } | null>(null);
-  const [favorites, setFavorites] = useState<number[]>([]);
 
   const getSortIcon = (column: string) => {
     if (!sortConfig || sortConfig.key !== column) return null;
@@ -96,10 +94,6 @@ const AlbumDetailDemo: React.FC = () => {
 
     setSortConfig({ key, direction });
     setSongs(sortedSongs);
-  };
-
-  const toggleFavorite = (id: number) => {
-    setFavorites((prev) => (prev.includes(id) ? prev.filter((favId) => favId !== id) : [...prev, id]));
   };
 
   return (
@@ -233,10 +227,10 @@ const AlbumDetailDemo: React.FC = () => {
                         <div className="flex items-center">
                           <span>{song.duration}</span>
                           <div className="ml-4">
-                            <LikeButton songId={""} />
+                            <LikeButton songId={song.id} />
                           </div>
                           <div className="ml-4">
-                            <AddToPlaylistButton songId={""} />
+                            <AddToPlaylistButton songId={song.id} />
                           </div>
                         </div>
                       </TableCell>
