@@ -3,7 +3,8 @@ using Muzik.Entities;
 using Muzik.Extensions;
 using Muzik.Middleware;
 using Microsoft.IdentityModel.Logging;
-
+using System.Net;
+AppContext.SetSwitch("System.Net.DontEnableIPv6", true);
 var builder = WebApplication.CreateBuilder(args);
 builder.Logging.AddConsole();
 
@@ -17,8 +18,9 @@ if (builder.Environment.IsProduction())
     var connectionString = Environment.GetEnvironmentVariable("CONNECTION_STRING");
     if (!string.IsNullOrEmpty(connectionString))
     {
-        builder.Configuration.GetSection("ConnectionStrings")["DefaultConnection"] = connectionString;
+        builder.Configuration["ConnectionStrings:DefaultConnection"] = connectionString;
     }
+
 }
 
 builder.Services.AddApplicationServices(builder.Configuration);
